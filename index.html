@@ -1,128 +1,113 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Yupe by yupe</title>
+  </head>
 
-    <title>Yupe, Yii powered</title>
+  <body>
+    <div id="container">
+      <div class="inner">
 
-    <style type="text/css">
-        body {
-            margin-top: 1.0em;
-            background-color: #fdfdfd;
-            font-family: Helvetica, Arial, FreeSans, san-serif;
-            color: black;
-        }
+        <header>
+          <h1>Yupe</h1>
+          <h2>Юпи! - мини CMS на фреймворке Yii</h2>
+        </header>
 
-        #container {
-            margin: 0 auto;
-            width: 700px;
-        }
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/yupe/yupe/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/yupe/yupe/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/yupe/yupe" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
 
-        h1 {
-            font-size: 3.8em;
-            color: #fafad2;
-            margin-bottom: 3px;
-        }
+        <hr>
 
-        h1 .small {
-            font-size: 0.4em;
-        }
+        <section id="main_content">
+          <h1>
+<a name="---cms--yii" class="anchor" href="#---cms--yii"><span class="octicon octicon-link"></span></a>ЮПИ! - CMS на Yii</h1>
 
-        h1 a {
-            text-decoration: none
-        }
+<p>Юпи! — мини CMS, написанная на замечательном MVC-фреймворке Yii (<a href="http://www.yiiframework.com/">http://www.yiiframework.com/</a>),
+на которой работает уже более 150 проектов.</p>
 
-        h2 {
-            font-size: 1.5em;
-            color: #f08080;
-        }
+<h2>
+<a name="--" class="anchor" href="#--"><span class="octicon octicon-link"></span></a>Требования к хостингу</h2>
 
-        h3 {
-            text-align: center;
-            color: #e1bc7c;
-        }
+<ul>
+<li>PHP &gt;= 5.3</li>
+<li>Yiiframework &gt;= 1.1.13</li>
+<li>MySQL/PostgreSQL</li>
+<li>Apaсhe/Nginx</li>
+</ul><h2>
+<a name="" class="anchor" href="#"><span class="octicon octicon-link"></span></a>Ссылки</h2>
 
-        a {
-            color: #3cb371;
-        }
+<ul>
+<li><a href="http://yupe.ru/">Официальный сайт</a></li>
+<li><a href="http://yupe.ru/docs/index.html">Официальная документация</a></li>
+<li><a href="http://yupe.ru/pages/help">Подробнее о проекте</a></li>
+<li><a href="http://yupe.ru/pages/team">Команда</a></li>
+<li><a href="https://twitter.com/#!/YupeCms">twitter</a></li>
+<li><a href="http://yupe.ru/talk/">Форум</a></li>
+<li><a href="http://yupe.ru/index.php/blog/yupe-mini-cms-yii">Блог проекта</a></li>
+<li><a href="http://yupe.ru/wiki/default/pageIndex">wiki</a></li>
+<li><a href="http://yupe.ru/feedback/index">Контакты</a></li>
+<li><a href="http://yupe.ru/pages/help">Как помочь проекту</a></li>
+<li><a href="https://github.com/yupe/yupe-ext">Репозиторий модулей</a></li>
+</ul><h2>
+<a name="-1" class="anchor" href="#-1"><span class="octicon octicon-link"></span></a>Возможности</h2>
 
-        .description {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            margin-top: 30px;
-            font-style: italic;
-        }
+<p>Из коробки Вы получаете каркас приложения, со следующим уже готовым
+функционалом (всё разделено на модули - используйте только то, что необходимо):</p>
 
-        .download {
-            float: right;
-        }
+<ul>
+<li>
+<a href="http://yupe.ru/registration">Регистрация</a>, <a href="http://yupe.ru/login">аутентификация</a>, <a href="http://yupe.ru/recovery">восстановление пароля</a> (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/user">модуль user</a>)</li>
+<li>Модуль пользователей, для управление пользователями сайта (блокировка, активация, редактирование и т.д.) через административный интерфейс (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/user">модуль user</a>)</li>
+<li>Модуль новостей для <a href="http://yupe.ru/story/ocherednoy-sayt-na-yupi">создания и публикация новостей на сайте</a> (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/news">модуль news</a>)</li>
+<li>Модуль статических страниц, для создания и управление статическими страницами сайта (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/page">модуль page</a>)</li>
+<li>Модуль категорий, для создания и управление категориями вашего сайта (разделами) (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/category">модуль category</a>)</li>
+<li>Модуль меню, для создания и редактирование меню вашего сайта (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/menu">модуль menu</a>)</li>
+<li>Модуль комментариев (можно комментировать любую сущность с выстраиванием древовидных комментариев, пример <a href="http://yupe.ru/post/logotip-dlya-yupi.html">http://yupe.ru/post/logotip-dlya-yupi.html</a> (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/comment">модуль comment</a>)</li>
+<li>Модуль простых справочников (хранение и управление справочной информацией) (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/dictionary">модуль dictionary</a>)</li>
+<li>Модуль для ведения блогов (<a href="http://yupe.ru/blog/yupe-mini-cms-yii">как индивидуальных, так и коллективных</a>) (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/blog">модуль blog</a>)</li>
+<li>Модуль для "Обратной связи" + <a href="http://yupe.ru/faq">раздел FAQ</a> (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/feedback">модуль feedback</a>)</li>
+<li>Модуль для работы с Wiki - работает через <a href="http://rmcreative.ru/blog/post/yeeki">модуль yeeki</a>
+</li>
+<li>Модуль документации, который позволяет создавать документацию для вашего сайта (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/docs">модуль docs</a>)</li>
+<li>Модуль изображений (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/image">модуль image</a>)</li>
+<li>Модуль галерея изображений, позволяющий организовать галереи изображений на вашем сайте (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/gallery">модуль gallery</a>)</li>
+<li>Модуль для создания и редактирования произвольных блоков контента (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/contentblock">модуль contentblock</a>)</li>
+<li>Модуль для создания заданий (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/queue">модуль queue</a>)</li>
+<li>Модуль управления почтовыми сообщениями (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/mail">модуль mail</a>)</li>
+<li>Модуль для установки системы (<a href="https://github.com/yupe/yupe/tree/master/protected/modules/install">модуль install</a>)</li>
+<li>Удобная админ панель в стиле Twitter Bootstrap  (<a href="http://yupe.ru/gallery/gallery/show/1">Выглядит вот так</a>)</li>
+<li><a href="https://github.com/yupe/yupe/tree/master/protected/modules/yupe/extensions/yupe">Возможность генерировать CRUD в стиле Twitter Bootstrap</a></li>
+</ul><h2>
+<a name="-2" class="anchor" href="#-2"><span class="octicon octicon-link"></span></a>Установка</h2>
 
-        pre {
-            background: #000000;
-            color: #fff;
-            padding: 15px;
+<p>Инструкции по установке можно <a href="http://yupe.ru/wiki/default/view?uid=%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0">почитать здесь</a>, либо в файле <code>install_ru.txt</code>.</p>
 
-        }
+<h2>
+<a name="-3" class="anchor" href="#-3"><span class="octicon octicon-link"></span></a>Лицензия</h2>
 
-        hr {
-            border: 0;
-            width: 80%;
-            border-bottom: 1px solid #aaa
-        }
+<p>Исходный код, макеты дизайна и вёрстка распространяются по <a href="http://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F_BSD">лицензии BSD</a>.
+Сообщество будет благодарно если на сайте будет присутствовать ссылка на <a href="http://yupe.ru/">http://yupe.ru/</a></p>
+        </section>
 
-        .footer {
-            text-align: center;
-            padding-top: 30px;
-            font-style: italic;
-        }
-    </style>
-</head>
+        <footer>
+          Yupe is maintained by <a href="https://github.com/yupe">yupe</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
 
-<body>
-<a href="https://github.com/yupe/yupe"><img style="position: absolute; top: 0; right: 0; border: 0;"
-                                            src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"
-                                            alt="Fork me on GitHub"/></a>
-
-<div id="container">
-
-    <div class="download">
-        <a href="https://github.com/yupe/yupe/zipball/master">
-            <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
+        
+      </div>
     </div>
-
-    <h1><a href="http://yupe.ru">yupe</a></h1>
-
-    <div class="description">
-        Yupe, mini cms, yii 1.1.13 powered, php 5.3+
-    </div>
-
-
-    <h2>Authors</h2>
-
-    <p><b>Yupe (team@yupe.ru)</b><br>
-    <hr>
-
-    <br/>Andrew Opeykin
-    <br/>Alexander Tishchenko
-    <br/>Lyzhenkov Alexander
-    <br/>Elizarov Alexey
-    <br/>Yevgeny Kulikov
-    <br/>Timashov Maxim
-    <br/>Anton Cherepanov
-    </p>
-
-    <h2>Download</h2>
-
-    <p>
-        You can download <a href="https://github.com/yupe/yupe/zipball/master">this project</a>.
-    </p>
-
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-        by running:
-    <pre><b>$ git clone https://github.com/yupe/yupe.git </b></pre>
-    </p>
-
-</div>
-
-</body>
+  </body>
 </html>
