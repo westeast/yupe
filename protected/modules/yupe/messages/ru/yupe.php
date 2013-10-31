@@ -174,7 +174,7 @@ return array (
   'Official forum' => 'Официальный форум',
   'Official site' => 'Официальный сайт',
   'Ok' => 'Да',
-  'On business support and development you can always <a href="http://yupe.ru/feedback/index/?form=help" target="_blank">feedback us</a> (<a href="http://yupe.ru/feedback/index/?form=help" target="_blank">http://yupe.ru/feedback/index</a>)' => 'По вопросам коммерческой поддержки и разработки Вы всегда можете <a href="http://yupe.ru/feedback/index/?form=help" target="_blank">написать нам</a> (<a href="http://yupe.ru/feedback/index/?form=help" target="_blank">http://yupe.ru/feedback/index</a>)',
+  'On business support and development you can always <a href="http://yupe.ru/contacts/?form=help" target="_blank">feedback us</a> (<a href="http://yupe.ru/contacts/?form=help" target="_blank">http://yupe.ru/contacts</a>)' => 'По вопросам коммерческой поддержки и разработки Вы всегда можете <a href="http://yupe.ru/contacts?form=help" target="_blank">написать нам</a> (<a href="http://yupe.ru/contacts/?form=help" target="_blank">http://yupe.ru/contacts</a>)',
   'Opeykin Andrey' => 'Опейкин Андрей',
   'Order development and support' => 'Разработка и поддержка',
   'Other' => 'Другое',
@@ -192,7 +192,7 @@ return array (
   'Powered by Yupe!' => 'Работает на Юпи!',
   'Profile' => 'Профиль',
   'Read Yii documentation' => 'Обязательно прочтите документацию Yii',
-  'Refresh' => 'Обвновить',
+  'Refresh' => 'Обновить',
   'Removed {count} records!' => 'Удалено {count} записей!',
   'Report a bug' => 'Сообщите об ошибке',
   'Report bug' => 'Сообщить об ошибке',
@@ -318,4 +318,5 @@ return array (
   'Widget "{widget}" was not found!' => 'Виджет "{widget}" не найден!',
   'Bad request. Please don\'t use similar requests anymore!' => 'Неверный запрос. Пожалуйста, больше не повторяйте такие запросы!',
   'Letter sent!' => 'Письмо отправлено',
+  'There is an error occurred when try get modules from the cache. It seems that module\'s folder was deleted.' => 'Произошла ошибка при получении модулей из кеша. Кажется, что каталог модуля был удален.',
 );
