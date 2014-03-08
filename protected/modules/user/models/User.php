@@ -53,7 +53,7 @@ class User extends YModel
 
     /**
      * Returns the static model of the specified AR class.
-     * 
+     *
      * @return User the static model class
      */
     public static function model($className = __CLASS__)
@@ -93,7 +93,7 @@ class User extends YModel
 
     /**
      * Массив связей:
-     * 
+     *
      * @return array
      */
     public function relations()
@@ -143,18 +143,18 @@ class User extends YModel
 
     /**
      * Проверка верификации почты:
-     * 
+     *
      * @return boolean
      */
     public function getIsVerifyEmail()
     {
         return $this->email_confirm;
     }
-   
+
 
     /**
      * Строковое значение верификации почты пользователя:
-     * 
+     *
      * @return string
      */
     public function getIsVerifyEmailStatus()
@@ -166,7 +166,7 @@ class User extends YModel
 
     /**
      * Поиск пользователей по заданным параметрам:
-     * 
+     *
      * @return CActiveDataProvider
      */
     public function search()
@@ -181,18 +181,18 @@ class User extends YModel
         $criteria->compare('t.last_name', $this->last_name, true);
         $criteria->compare('t.nick_name', $this->nick_name, true);
         $criteria->compare('t.email', $this->email, true);
-        $criteria->compare('t.gender', $this->gender);       
-        $criteria->compare('t.status', $this->status);        
+        $criteria->compare('t.gender', $this->gender);
+        $criteria->compare('t.status', $this->status);
         $criteria->compare('t.access_level', $this->access_level);
         $criteria->compare('t.last_visit', $this->last_visit, true);
-        $criteria->compare('t.email_confirm', $this->email_confirm);        
+        $criteria->compare('t.email_confirm', $this->email_confirm);
 
         return new CActiveDataProvider(get_class($this), array('criteria' => $criteria));
     }
 
     /**
      * Метод после поиска:
-     * 
+     *
      * @return void
      */
     public function afterFind()
@@ -208,7 +208,7 @@ class User extends YModel
 
     /**
      * Предвалидационные действия:
-     * 
+     *
      * @return void
      */
     public function beforeValidate()
@@ -220,13 +220,15 @@ class User extends YModel
 
     /**
      * Метод выполняемый перед сохранением:
-     * 
+     *
      * @return void
      */
     public function beforeSave()
     {
         if($this->getIsNewRecord()) {
             $this->registration_date = new CDbExpression('NOW()');
+            $this->birth_date = new CDbExpression('NOW()');
+            // $this->birth_date = null;
         }else{
             // Запрещаем действия, при которых администратор
             // может быть заблокирован или сайт останется без
@@ -257,7 +259,7 @@ class User extends YModel
 
     /**
      * Метод перед удалением:
-     * 
+     *
      * @return void
      */
     public function beforeDelete()
@@ -267,7 +269,7 @@ class User extends YModel
                 'access_level',
                 Yii::t('UserModule.user', 'You can\'t make this changes!')
             );
-            
+
             return false;
         }
 
@@ -276,7 +278,7 @@ class User extends YModel
 
     /**
      * Именнованные условия:
-     * 
+     *
      * @return array
      */
     public function scopes()
@@ -305,7 +307,7 @@ class User extends YModel
 
     /**
      * Список текстовых значений ролей:
-     * 
+     *
      * @return array
      */
     public function getAccessLevelsList()
@@ -319,7 +321,7 @@ class User extends YModel
     /**
      * Получаем строковое значение роли
      * пользователя:
-     * 
+     *
      * @return string
      */
     public function getAccessLevel()
@@ -330,7 +332,7 @@ class User extends YModel
 
     /**
      * Список возможных статусов пользователя:
-     * 
+     *
      * @return array
      */
     public function getStatusList()
@@ -345,7 +347,7 @@ class User extends YModel
     /**
      * Получение строкового значения
      * статуса пользователя:
-     * 
+     *
      * @return string
      */
     public function getStatus()
@@ -372,7 +374,7 @@ class User extends YModel
 
     /**
      * Список статусов половой принадлежности:
-     * 
+     *
      * @return array
      */
     public function getGendersList()
@@ -387,7 +389,7 @@ class User extends YModel
     /**
      * Получаем строковое значение половой
      * принадлежности пользователя:
-     * 
+     *
      * @return string
      */
     public function getGender()
@@ -402,7 +404,7 @@ class User extends YModel
     /**
      * Получить url аватарки пользователя:
      * -----------------------------------
-     * Возвращаем именно url, так как на 
+     * Возвращаем именно url, так как на
      * фронте может быть любая вариация
      * использования, незачем ограничивать
      * разработчиков.
@@ -447,7 +449,7 @@ class User extends YModel
                 return Yii::app()->getRequest()->baseUrl . '/'. $uploadPath . '/' . $avatarsDir . "/" . $sizedFile;
             }
         }
-        
+
         // Нету аватарки, печалька :'(
         return Yii::app()->getRequest()->baseUrl . Yii::app()->getModule('user')->defaultAvatar;
     }
@@ -460,7 +462,7 @@ class User extends YModel
      * мы запрещаем в GridView выставлять
      * статус "Не активирован", если есть
      * необходимость - редактирование пользователя.
-     * 
+     *
      * @return array
      */
     public function getChangeableStatusList()
@@ -478,9 +480,9 @@ class User extends YModel
 
     /**
      * Получаем полное имя пользователя:
-     * 
+     *
      * @param  string $separator - разделитель
-     * 
+     *
      * @return string
      */
     public function getFullName($separator = ' ')
@@ -493,7 +495,7 @@ class User extends YModel
 
     /**
      * Удаление старого аватара:
-     * 
+     *
      * @return void
      */
     protected function removeOldAvatar()
@@ -513,17 +515,17 @@ class User extends YModel
 
         $this->avatar = null;
     }
-    
+
     /**
      * Устанавливает новый аватар
      *
      * @param CUploadedFile $uploadedFile
-     * 
+     *
      * @throws CException
      *
      * @return void
      */
-    public function changeAvatar(CUploadedFile $uploadedFile) {        
+    public function changeAvatar(CUploadedFile $uploadedFile) {
         $basePath = Yii::app()->getModule('user')->getUploadPath();
 
         //создаем каталог для аватарок, если не существует
