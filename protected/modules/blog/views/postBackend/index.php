@@ -8,8 +8,7 @@
  *   @license  https://github.com/yupe/yupe/blob/master/LICENSE BSD
  *   @link     http://yupe.ru
  **/
-$this->breadcrumbs = array(
-    Yii::app()->getModule('blog')->getCategory() => array(),
+$this->breadcrumbs = array(   
     Yii::t('BlogModule.blog', 'Posts') => array('/blog/postBackend/index'),
     Yii::t('BlogModule.blog', 'Administration'),
 );
@@ -84,16 +83,14 @@ $this->renderPartial('_search', array('model' => $model));
                 'name' => 'id'
             ),
         ),
-        'columns' => array(
+        'columns' => array( 
             array(
                 'name'  => 'id',
-                'type'  => 'raw',
-                'value' => 'CHtml::link($data->id, array("/blog/postBackend/update", "id" => $data->id))',
-            ),
-            array(
-                'name'  => 'title',
-                'type'  => 'raw',
-                'value' => 'CHtml::link($data->title, array("/blog/postBackend/update", "id" => $data->id))',
+                'value' => 'CHtml::link($data->id, array("/blog/postBackend/update","id" => $data->id))',
+                'type'  => 'html',
+                'htmlOptions' => array(
+                    'style' => 'width:10px;'
+                )
             ),
             array(
                 'name'   => 'blog_id',
@@ -102,9 +99,51 @@ $this->renderPartial('_search', array('model' => $model));
                 'filter' => CHtml::listData(Blog::model()->findAll(),'id','name')
             ),
             array(
-                'name'  => 'category_id',
+                'class' => 'bootstrap.widgets.TbEditableColumn',                
+                'name'  => 'title',               
+                'editable' => array(   
+                    'url' => $this->createUrl('/blog/postBackend/inline'),                 
+                    'mode' => 'inline',
+                    'params' => array(
+                        Yii::app()->request->csrfTokenName => Yii::app()->request->csrfToken
+                    )                    
+                )                
+            ),
+            array(
+                'class' => 'bootstrap.widgets.TbEditableColumn',                
+                'name'  => 'slug',
+                'editable' => array(   
+                    'url'  => $this->createUrl('/blog/postBackend/inline'),
+                    'mode' => 'inline',
+                    'params' => array(
+                        Yii::app()->request->csrfTokenName => Yii::app()->request->csrfToken
+                    )                                 
+                )                           
+            ),
+            array(
+                'class' => 'bootstrap.widgets.TbEditableColumn',                
+                'name'  => 'publish_date',
+                'editable' => array(   
+                    'url'  => $this->createUrl('/blog/postBackend/inline'),
+                    'mode' => 'inline',
+                    'type' => 'datetime',
+                    'options' => array(
+                        'datetimepicker' => array(
+                           'format' => 'dd-mm-yyyy hh:ii'
+                        ),
+                        'datepicker' => array(
+                            'format' => 'dd-mm-yyyy hh:ii'
+                        ),
+                    ),
+                    'params' => array(
+                        Yii::app()->request->csrfTokenName => Yii::app()->request->csrfToken
+                    )                                 
+                )                           
+            ),
+            array(
+                'name'   => 'category_id',
                 'value'  => 'empty($data->category) ? "---" : $data->category->name',
-                'filter' => CHtml::listData($this->module->getCategoryListForPost(),'id','name')
+                'filter' => Category::model()->getFormattedList((int)Yii::app()->getModule('blog')->mainPostCategory)
             ),
             array(
                 'name'   => 'create_user_id',
@@ -113,26 +152,36 @@ $this->renderPartial('_search', array('model' => $model));
                 'filter' => CHtml::listData(User::model()->cache($this->yupe->coreCacheTime)->findAll(),'id','nick_name')
             ),
             array(
-                'name'  => 'publish_date',
-                'value' => 'Yii::app()->getDateFormatter()->formatDateTime($data->publish_date, "short", "short")',
-            ),
-            array(
-                'name'  => 'access_type',
-                'type'  => 'raw',
-                'value' => '$this->grid->returnBootstrapStatusHtml($data, "access_type", "AccessType", array(1 => "globe", 2 => "home"))',
-                'filter' => Post::model()->getAccessTypeList()
-            ),
-            array(
-                'name'  => 'status',
-                'type'  => 'raw',
-                'value'  => '$this->grid->returnBootstrapStatusHtml($data, "status", "Status", array("pencil", "ok-sign", "time"))',
+                'class'  => 'bootstrap.widgets.TbEditableColumn',
+                'editable' => array(
+                    'url'  => $this->createUrl('/blog/postBackend/inline'),
+                    'mode' => 'popup',
+                    'type' => 'select',
+                    'source' => $model->getStatusList(),
+                    'params' => array(
+                        Yii::app()->request->csrfTokenName => Yii::app()->request->csrfToken
+                    )
+                ),
+                'name'   => 'status',
+                'type'   => 'raw',
+                'value'  => '$data->getStatus()',
                 'filter' => Post::model()->getStatusList()
             ),
             array(
+                'class'  => 'bootstrap.widgets.TbEditableColumn',
+                'editable' => array(
+                    'url'  => $this->createUrl('/blog/postBackend/inline'),
+                    'mode' => 'popup',
+                    'type' => 'select',
+                    'source' => $model->getCommentStatusList(),
+                    'params' => array(
+                        Yii::app()->request->csrfTokenName => Yii::app()->request->csrfToken
+                    )
+                ),
                 'name'  => 'comment_status',
                 'type'  => 'raw',
-                'value' => '$this->grid->returnBootstrapStatusHtml($data, "comment_status", "CommentStatus", array(1 => "ok-sign", 2 => "lock"))',
-                'filter' => Post::model()->getCommentStatusList()
+                'value' => '$data->getCommentStatus()',
+                'filter' => $model->getCommentStatusList()
             ),
             array(
                 'header' => Yii::t('BlogModule.blog','Tags'),

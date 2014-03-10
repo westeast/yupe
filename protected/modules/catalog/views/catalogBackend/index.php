@@ -1,6 +1,5 @@
 <?php
     $this->breadcrumbs = array(
-        Yii::app()->getModule('catalog')->getCategory() => array(),
         Yii::t('CatalogModule.catalog', 'Products') => array('/catalog/catalogBackend/index'),
         Yii::t('CatalogModule.catalog', 'Manage'),
     );
@@ -64,7 +63,7 @@ $this->renderPartial('_search', array('model' => $model));
             'name'   => 'category_id',
             'type'   => 'raw',
             'value'  => '$data->categoryLink',
-            'filter' => CHtml::listData(Yii::app()->getModule('catalog')->getCategoryList(),'id','name')
+			'filter' => CHtml::activeDropDownList($model, 'category_id', Category::model()->getFormattedList(Yii::app()->getModule('catalog')->mainCategory), array('encode' => false, 'empty' => ''))
         ),
         'price',
         'article',

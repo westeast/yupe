@@ -1,6 +1,5 @@
 <?php
-    $this->breadcrumbs = array(
-        Yii::app()->getModule('page')->getCategory() => array(),
+    $this->breadcrumbs = array(       
         Yii::t('PageModule.page', 'Pages') => array('/page/pageBackend/index'),
         Yii::t('PageModule.page', 'List'),
     );
@@ -69,7 +68,7 @@ $this->renderPartial('_search', array('model' => $model, 'pages' => $pages));
         array(
             'name'  => 'category_id',
             'value' => '$data->getCategoryName()',
-            'filter' => CHtml::listData($this->module->getCategoryList(),'id','name')
+			'filter' => CHtml::activeDropDownList($model, 'category_id', Category::model()->getFormattedList(Yii::app()->getModule('page')->mainCategory), array('encode' => false, 'empty' => ''))
         ),
         array(
             'name'   => 'parent_id',

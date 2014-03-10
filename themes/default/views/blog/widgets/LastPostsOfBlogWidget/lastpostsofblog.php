@@ -1,14 +1,7 @@
-<?php
-
-Yii::import('application.modules.blog.BlogModule');
-
-$mainAssets = Yii::app()->AssetManager->publish(
-    Yii::app()->theme->basePath . "/web/"
-);
-
-Yii::app()->clientScript->registerCssFile($mainAssets . '/css/last-posts.css'); ?>
+<?php Yii::import('application.modules.blog.BlogModule'); ?>
 
 <div class="posts">
+
     <p class="posts-header">
         <span class="posts-header-text"><?php echo Yii::t('BlogModule.blog','Last blog posts'); ?></span>
     </p>
@@ -20,7 +13,7 @@ Yii::app()->clientScript->registerCssFile($mainAssets . '/css/last-posts.css'); 
                     <?php echo CHtml::link(
                         CHtml::encode($post->title), array(
                             '/blog/post/show/',
-                            'slug' => $post->slug
+                            'slug' => CHtml::encode($post->slug)
                         )
                     ); ?>
                 </div>
@@ -40,9 +33,9 @@ Yii::app()->clientScript->registerCssFile($mainAssets . '/css/last-posts.css'); 
                         <i class="icon-pencil"></i>
 
                         <?php echo CHtml::link(
-                            $post->blog->name, array(
+                            CHtml::encode($post->blog->name), array(
                                 '/blog/blog/show/',
-                                'slug' => $post->blog->slug
+                                'slug' => CHtml::encode($post->blog->slug)
                             )
                         ); ?>
                     </span>
@@ -57,7 +50,7 @@ Yii::app()->clientScript->registerCssFile($mainAssets . '/css/last-posts.css'); 
                 </div>
 
                 <div class="posts-list-block-text">
-                    <?php echo $post->getQuote(); ?>
+                    <?php echo strip_tags($post->getQuote()); ?>
                 </div>
 
                 <div class="posts-list-block-tags">
@@ -71,19 +64,17 @@ Yii::app()->clientScript->registerCssFile($mainAssets . '/css/last-posts.css'); 
                                 <span>
                                     <?php echo CHtml::link(CHtml::encode($tag), array('/posts/', 'tag' => CHtml::encode($tag)));?>
                                 </span>
-                            <?php endforeach?>
+                            <?php endforeach;?>
                         </span>
 
                         <span class="posts-list-block-tags-comments">
-                            <i class="icon-comments"></i>
+                            <i class="fa fa-comments"></i>
 
                             <?php echo CHtml::link(
-                                ($post->commentsCount>0)
-                                    ? $post->commentsCount-1
-                                    : 0,
+                                $post->getCommentCount(),
                                 array(
                                     '/blog/post/show/',
-                                    'slug' => $post->slug,
+                                    'slug' => CHtml::encode($post->slug),
                                     '#' => 'comments'
                                 )
                             );?>

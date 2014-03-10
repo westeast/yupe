@@ -13,13 +13,20 @@ return array(
     'module'   => array(
         'class' => 'application.modules.comment.CommentModule',
     ),
-    'import'    => array(
-        'application.modules.comment.*',
+    'import'    => array(      
         'application.modules.comment.models.*',
+        'application.modules.blog.models.*',
         'vendor.yiiext.nested-set-behavior.NestedSetBehavior',
     ),
-    'component' => array(),
-    'rules'     => array(
-        '/comment/comment/captcha/<v>' => '/comment/comment/captcha/'
+    'component' => array(
+        'commentManager' => array(
+            'class' => 'application.modules.comment.components.CommentManager'
+        )
+    ),
+    'rules'     => array(        
+        '/comment/comment/captcha/refresh/<v>' => 'comment/comment/captcha/',
+        '/comment/comment/captcha/<v>' => 'comment/comment/captcha/',
+        '/comment/add/' => 'comment/comment/add/',
+        '/comments/rss/<model>/<modelId>' => 'comment/commentRss/feed'
     ),
 );

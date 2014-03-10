@@ -1,7 +1,7 @@
 <?php
 
 /**
- * YFile хелпер, содержащий вспомогательные функции для работы с файловой системой
+ * yupe\helpers\YFile:: хелпер, содержащий вспомогательные функции для работы с файловой системой
  *
  * @package  yupe.modules.yupe.helpers
  * @subpackage helpers
@@ -11,6 +11,10 @@
  * @link http://yupe.ru
  *
  */
+
+
+namespace yupe\helpers;
+use CFileHelper;
 
 class YFile extends CFileHelper
 {

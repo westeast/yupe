@@ -1,6 +1,5 @@
 <?php
-$this->breadcrumbs = array(
-    Yii::app()->getModule('feedback')->getCategory() => array(),
+$this->breadcrumbs = array(   
     Yii::t('FeedbackModule.feedback', 'Messages ') => array('/feedback/feedbackBackend/index'),
     Yii::t('FeedbackModule.feedback', 'Management'),
 );
@@ -58,7 +57,14 @@ Yii::app()->getClientScript()->registerCssFile($assets . '/css/feedback.css');
     'yupe\widgets\CustomListView', array(
         'id'           => 'feed-back-list',
         'dataProvider' => $model->search(),
-        'itemView'     => '_view'
+        'itemView'     => '_view',
+        'sortableAttributes'=>array(
+            'creation_date',
+            'status',
+            'theme',
+            'category_id',
+            'is_faq',
+         ),
     )
 ); ?>
 

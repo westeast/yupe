@@ -189,13 +189,14 @@ CREATE TABLE IF NOT EXISTS `yupe_catalog_good` (
 
 -- --------------------------------------------------------
 
+-- --------------------------------------------------------
+
 --
 -- Table structure for table `yupe_category_category`
 --
 
 CREATE TABLE IF NOT EXISTS `yupe_category_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) DEFAULT NULL,
   `alias` varchar(150) NOT NULL,
   `lang` char(2) DEFAULT NULL,
   `name` varchar(250) NOT NULL,
@@ -203,12 +204,18 @@ CREATE TABLE IF NOT EXISTS `yupe_category_category` (
   `short_description` text,
   `description` text NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT '1',
+  `level` int(11) DEFAULT '0',
+  `root` int(11) DEFAULT '0',
+  `lft` int(11) DEFAULT '0',
+  `rgt` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `ux_yupe_category_category_alias_lang` (`alias`,`lang`),
-  KEY `ix_yupe_category_category_parent_id` (`parent_id`),
-  KEY `ix_yupe_category_category_status` (`status`)
+  KEY `ix_yupe_category_category_status` (`status`),
+  KEY `ix_yupe_category_category_level` (`level`),
+  KEY `ix_yupe_category_category_root` (`root`),
+  KEY `ix_yupe_category_category_lft` (`lft`),
+  KEY `ix_yupe_category_category_rgt` (`rgt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
 -- --------------------------------------------------------
 
 --
@@ -536,36 +543,38 @@ CREATE TABLE IF NOT EXISTS `yupe_migrations` (
 --
 
 INSERT INTO `yupe_migrations` (`id`, `module`, `version`, `apply_time`) VALUES
-(1, 'user', 'm000000_000000_user_base', 1383667157),
-(2, 'user', 'm131019_212911_user_tokens', 1383667157),
-(3, 'user', 'm131025_152911_clean_user_table', 1383667159),
-(4, 'user', 'm131026_002234_prepare_hash_user_password', 1383667160),
-(5, 'yupe', 'm000000_000000_yupe_base', 1383667161),
-(6, 'yupe', 'm130527_154455_yupe_change_unique_index', 1383667161),
-(7, 'category', 'm000000_000000_category_base', 1383667163),
-(8, 'comment', 'm000000_000000_comment_base', 1383667165),
-(9, 'comment', 'm130704_095200_comment_nestedsets', 1383667168),
-(10, 'image', 'm000000_000000_image_base', 1383667170),
-(11, 'gallery', 'm000000_000000_gallery_base', 1383667171),
-(12, 'gallery', 'm130427_120500_gallery_creation_user', 1383667172),
-(13, 'news', 'm000000_000000_news_base', 1383667174),
-(14, 'catalog', 'm000000_000000_good_base', 1383667176),
-(15, 'menu', 'm000000_000000_menu_base', 1383667179),
-(16, 'menu', 'm121220_001126_menu_test_data', 1383667179),
-(17, 'menu', 'm131017_064101_fix_menu_test_data', 1383667179),
-(18, 'feedback', 'm000000_000000_feedback_base', 1383667181),
-(19, 'queue', 'm000000_000000_queue_base', 1383667182),
-(20, 'queue', 'm131007_031000_queue_fix_index', 1383667183),
-(21, 'blog', 'm000000_000000_blog_base', 1383667193),
-(22, 'blog', 'm130503_091124_BlogPostImage', 1383667193),
-(23, 'blog', 'm130529_151602_add_post_category', 1383667194),
-(24, 'dictionary', 'm000000_000000_dictionary_base', 1383667198),
-(25, 'yeeki', 'm000000_000000_yeeki_base', 1383667202),
-(26, 'contentblock', 'm000000_000000_contentblock_base', 1383667203),
-(27, 'page', 'm000000_000000_page_base', 1383667206),
-(28, 'page', 'm130115_155600_columns_rename', 1383667207),
-(29, 'mail', 'm000000_000000_mail_base', 1383667208),
-(30, 'user', 'm131106_111552_user_restore_fields', 1383667206);
+(1, 'user', 'm000000_000000_user_base', 1386585435),
+(2, 'user', 'm131019_212911_user_tokens', 1386585435),
+(3, 'user', 'm131025_152911_clean_user_table', 1386585437),
+(4, 'user', 'm131026_002234_prepare_hash_user_password', 1386585438),
+(5, 'user', 'm131106_111552_user_restore_fields', 1386585438),
+(6, 'user', 'm131121_190850_modify_tokes_table', 1386585439),
+(7, 'yupe', 'm000000_000000_yupe_base', 1386585440),
+(8, 'yupe', 'm130527_154455_yupe_change_unique_index', 1386585441),
+(9, 'category', 'm000000_000000_category_base', 1386585442),
+(10, 'category', 'm131103_044317_category_nestedsets', 1386585445),
+(11, 'image', 'm000000_000000_image_base', 1386585447),
+(12, 'comment', 'm000000_000000_comment_base', 1386585449),
+(13, 'comment', 'm130704_095200_comment_nestedsets', 1386585451),
+(14, 'gallery', 'm000000_000000_gallery_base', 1386585453),
+(15, 'gallery', 'm130427_120500_gallery_creation_user', 1386585454),
+(16, 'news', 'm000000_000000_news_base', 1386585457),
+(17, 'catalog', 'm000000_000000_good_base', 1386585460),
+(18, 'menu', 'm000000_000000_menu_base', 1386585462),
+(19, 'menu', 'm121220_001126_menu_test_data', 1386585462),
+(20, 'menu', 'm131017_064101_fix_menu_test_data', 1386585462),
+(21, 'feedback', 'm000000_000000_feedback_base', 1386585464),
+(22, 'queue', 'm000000_000000_queue_base', 1386585465),
+(23, 'queue', 'm131007_031000_queue_fix_index', 1386585465),
+(24, 'blog', 'm000000_000000_blog_base', 1386585475),
+(25, 'blog', 'm130503_091124_BlogPostImage', 1386585475),
+(26, 'blog', 'm130529_151602_add_post_category', 1386585476),
+(27, 'dictionary', 'm000000_000000_dictionary_base', 1386585480),
+(28, 'yeeki', 'm000000_000000_yeeki_base', 1386585484),
+(29, 'contentblock', 'm000000_000000_contentblock_base', 1386585484),
+(30, 'page', 'm000000_000000_page_base', 1386585487),
+(31, 'page', 'm130115_155600_columns_rename', 1386585487),
+(32, 'mail', 'm000000_000000_mail_base', 1386585489);
 
 
 -- --------------------------------------------------------
@@ -739,7 +748,7 @@ CREATE TABLE `yupe_user_user` (
 -- Dumping data for table `yupe_user_user`
 --
 
-INSERT INTO `yupe_user_user` (`id`, `change_date`, `first_name`, `middle_name`, `last_name`, `nick_name`, `email`, `gender`, `birth_date`, `site`, `about`, `location`, `status`, `access_level`, `last_visit`, `avatar`, `hash`, `email_confirm`, `registration_date`) VALUES(1, '2013-11-05 20:02:30', '', '', '', 'yupe', 'yupe@yupe.local', 0, NULL, '', '', '', 1, 1, '2013-11-05 20:02:31', NULL, '$2a$13$DfQ.s4KZQR/zD.AvuJA6vuVsYoWPezsRDSZS/7q3rl.cGFqS7COGG', 1, '2013-11-05 20:02:30');
+INSERT INTO `yupe_user_user` (`id`, `change_date`, `first_name`, `middle_name`, `last_name`, `nick_name`, `email`, `gender`, `birth_date`, `site`, `about`, `location`, `status`, `access_level`, `last_visit`, `avatar`, `hash`, `email_confirm`, `registration_date`) VALUES(1, '2013-11-05 20:02:30', '', '', '', 'yupe', 'yupe@yupe.local', 0, NULL, '', '', '', 1, 1, '2013-11-05 20:02:31', NULL, '$2a$13$kV7qdBBM3MPYW.6LAKeiv.iIAMDa4BZFhwzjMWhCm78UmDT8wDH7G', 1, '2013-11-05 20:02:30');
 
 
 -- --------------------------------------------------------
@@ -878,12 +887,6 @@ ALTER TABLE `yupe_catalog_good`
   ADD CONSTRAINT `fk_yupe_catalog_good_category` FOREIGN KEY (`category_id`) REFERENCES `yupe_category_category` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_yupe_catalog_good_change_user` FOREIGN KEY (`change_user_id`) REFERENCES `yupe_user_user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_yupe_catalog_good_user` FOREIGN KEY (`user_id`) REFERENCES `yupe_user_user` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
-
---
--- Constraints for table `yupe_category_category`
---
-ALTER TABLE `yupe_category_category`
-  ADD CONSTRAINT `fk_yupe_category_category_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `yupe_category_category` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `yupe_comment_comment`

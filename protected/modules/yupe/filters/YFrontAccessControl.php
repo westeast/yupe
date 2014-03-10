@@ -9,6 +9,12 @@
  * @since 0.1
  *
  */
+namespace yupe\filters;
+
+use CAccessControlFilter;
+use CHttpException;
+use Yii;
+
 class YFrontAccessControl extends CAccessControlFilter
 {
     public function preFilter($filterChain)
@@ -17,6 +23,6 @@ class YFrontAccessControl extends CAccessControlFilter
             return true;
         }
 
-        $this->accessDenied(Yii::app()->user, Yii::t('yii', 'You are not authorized to perform this action.'));
+        throw new CHttpException(404);
     }
 }

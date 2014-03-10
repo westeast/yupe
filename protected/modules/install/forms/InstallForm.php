@@ -10,7 +10,7 @@
  * @version  0.0.1
  * @link     http://yupe.ru
  **/
-class InstallForm extends YFormModel
+class InstallForm extends yupe\models\YFormModel
 {
     /**
      * Типы баз данных:
@@ -91,7 +91,8 @@ class InstallForm extends YFormModel
              * Для настройки администратора:
              **/
             array('userName, userPassword, cPassword, userEmail', 'required', 'on' => 'createUser'),
-            array('userPassword, cPassword, userName', 'length', 'min' => 8),
+            array('userPassword, cPassword', 'length', 'min' => 8),
+            array('userName', 'length', 'min' => 4),
             array('cPassword', 'compare', 'compareAttribute' => 'userPassword', 'message' => Yii::t('InstallModule.install', 'Passwords are not consistent')),
             array('userEmail', 'email'),
         );

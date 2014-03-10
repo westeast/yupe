@@ -10,8 +10,7 @@
  **/
 $this->pageTitle = 'Галерея - Изображения галереи';
 
-$this->breadcrumbs = array(
-    Yii::app()->getModule('gallery')->getCategory() => array(),
+$this->breadcrumbs = array(    
     Yii::t('GalleryModule.gallery', 'Galleries') => array('/gallery/galleryBackend/index'),
     $model->name,
 );
@@ -22,10 +21,6 @@ $this->menu = array(
     array('label' => Yii::t('GalleryModule.gallery', 'Gallery') . ' «' . mb_substr($model->name, 0, 32) . '»'),
     array('icon' => 'pencil', 'label' => Yii::t('GalleryModule.gallery', 'Edit gallery'), 'url' => array(
         '/gallery/galleryBackend/update',
-        'id' => $model->id
-    )),
-    array('icon' => 'eye-open', 'label' => Yii::t('GalleryModule.gallery', 'View gallery'), 'url' => array(
-        '/gallery/galleryBackend/view',
         'id' => $model->id
     )),
     array('icon' => 'picture', 'label' => Yii::t('GalleryModule.gallery', 'Gallery images'), 'url' => array('/gallery/galleryBackend/images', 'id' => $model->id)),

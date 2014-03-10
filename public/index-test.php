@@ -9,16 +9,10 @@
  *   @link     http://yupe.ru
  **/
 
-
-
 // подробнее про index.php http://www.yiiframework.ru/doc/guide/ru/basics.entry
 if (!ini_get('date.timezone')) {
     date_default_timezone_set('UTC');
 }
-
-// Во время тестирования нет необходимости использовать
-// кеширование настроек:
-defined('CACHE_SETTINGS') or define('CACHE_SETTINGS', false);
 
 // Комментируем перед выпуском в продакшен:
 define('YII_DEBUG', true);

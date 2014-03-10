@@ -11,6 +11,39 @@
  */
 class CommentBackendController extends yupe\components\controllers\BackController
 {
+    public function actionInline()
+    {
+        if (!Yii::app()->request->getIsAjaxRequest() || !Yii::app()->request->getIsPostRequest()) {
+            throw new CHttpException(404);
+        }
+
+        $name = Yii::app()->request->getPost('name');
+        $value = Yii::app()->request->getPost('value');
+        $pk = (int)Yii::app()->request->getPost('pk');
+
+        if (!isset($name, $value, $pk)) {
+            throw new CHttpException(404);
+        }
+
+        if (!in_array($name, array('status'))) {
+            throw new CHttpException(404);
+        }
+
+        $model = Comment::model()->findByPk($pk);
+
+        if (null === $model) {
+            throw new CHttpException(404);
+        }
+
+        $model->$name = $value;
+
+        if ($model->saveNode()) {
+            Yii::app()->ajax->success();
+        }
+
+        throw new CHttpException(500, $model->getError($name));
+    }
+
     /**
      * Displays a particular model.
      * @param integer $id the ID of the model to be displayed
@@ -32,6 +65,7 @@ class CommentBackendController extends yupe\components\controllers\BackControlle
         // $this->performAjaxValidation($model);
 
         if (($data = Yii::app()->getRequest()->getPost('Comment')) !== null) {
+
             $model->setAttributes($data);
 
             $saveStatus = false;
@@ -43,7 +77,7 @@ class CommentBackendController extends yupe\components\controllers\BackControlle
                 $saveStatus     = $model->appendTo($rootForComment);
             } else { // Иначе если parent_id не указан...
 
-                $rootNode = Comment::createRootOfCommentsIfNotExists(
+                $rootNode = $model->createRootOfCommentsIfNotExists(
                     $model->getAttribute("model"),
                     $model->getAttribute("model_id")
                 );
@@ -55,8 +89,10 @@ class CommentBackendController extends yupe\components\controllers\BackControlle
             }
 
             if ($saveStatus) {
+
                 Yii::app()->cache->delete("Comment{$model->model}{$model->model_id}");
-                Yii::app()->user->setFlash(YFlashMessages::SUCCESS_MESSAGE,Yii::t('CommentModule.comment','Comment was created!'));
+
+                Yii::app()->user->setFlash(yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,Yii::t('CommentModule.comment','Comment was created!'));
 
                 $this->redirect(
                     (array) Yii::app()->getRequest()->getPost(
@@ -88,7 +124,7 @@ class CommentBackendController extends yupe\components\controllers\BackControlle
 
             if ($model->saveNode()) {
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('CommentModule.comment','Comment was updated!')
                 );
 

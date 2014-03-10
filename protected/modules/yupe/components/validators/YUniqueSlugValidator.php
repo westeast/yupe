@@ -10,7 +10,9 @@
  * @since 0.1
  *
  */
+namespace yupe\components\validators;
 
+use CUniqueValidator;
 
 class YUniqueSlugValidator extends CUniqueValidator
 {

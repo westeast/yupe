@@ -1,6 +1,5 @@
 <?php
-    $this->breadcrumbs = array(
-        Yii::app()->getModule('news')->getCategory() => array(),
+    $this->breadcrumbs = array(       
         Yii::t('NewsModule.news', 'News') => array('/news/newsBackend/index'),
         Yii::t('NewsModule.news', 'Management'),
     );
@@ -72,7 +71,7 @@ $this->renderPartial('_search', array('model' => $model));
         array(
            'name'   => 'category_id',
            'value'  => '$data->getCategoryName()',
-           'filter' => CHtml::listData($this->module->getCategoryList(),'id','name')
+		   'filter' => CHtml::activeDropDownList($model, 'category_id', Category::model()->getFormattedList(Yii::app()->getModule('news')->mainCategory), array('encode' => false, 'empty' => ''))
         ),
         array(
             'name'   => 'status',

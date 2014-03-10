@@ -1,6 +1,5 @@
 <?php
-    $this->breadcrumbs = array(
-        Yii::app()->getModule('user')->getCategory() => array(),
+    $this->breadcrumbs = array(        
         Yii::t('UserModule.user', 'Users') => array('/user/userBackend/index'),
         $model->nick_name,
     );
@@ -71,7 +70,6 @@
         ),
         'last_visit',
         'registration_date',
-        'change_date',
-        'ip',
+        'change_date'     
     ),
 )); ?>

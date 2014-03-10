@@ -3,8 +3,10 @@
 
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yupe/yupe/badges/quality-score.png?s=7530a908ed160af10407a051474a9064325510cc)](https://scrutinizer-ci.com/g/yupe/yupe/)
 [![Total Downloads](https://poser.pugx.org/yupe/yupe/downloads.png)](https://packagist.org/packages/yupe/yupe)
-[![Dependencies Status](https://d2xishtp1ojlk0.cloudfront.net/d/1477472)](http://depending.in/yupe/yupe)
+[![Gitter chat](https://badges.gitter.im/yupe/yupe.png)](https://gitter.im/yupe/yupe)
+[![Dependency Status](https://www.versioneye.com/user/projects/52fc8213ec1375edd50002b8/badge.png)](https://www.versioneye.com/user/projects/52fc8213ec1375edd50002b8)
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/yupe/yupe/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/bc6a0620-0bc7-4bb8-9e80-02e586fd1b87/mini.png)](https://insight.sensiolabs.com/projects/bc6a0620-0bc7-4bb8-9e80-02e586fd1b87)
 
 **Внимание! Все pull-request'ы принимаются в [dev ветку](https://github.com/yupe/yupe/tree/dev)** 
 
@@ -18,7 +20,7 @@
 * каталоги товаров
 
 
-**На Юпи! уже работает более 250 проектов, Юпи! активно используются несколькими студиями и [командами разработчиков](http://yupe.ru/pages/friends)**
+**На Юпи! уже работает более 350 проектов, Юпи! активно используются несколькими студиями и [командами разработчиков](http://yupe.ru/pages/friends)**
 
 Прежде всего Юпи! рассчитан на PHP-разработчиков, знакомых с Yii
 
@@ -28,11 +30,10 @@
 
 Для успешной работы проекта на Юпи! вполне достаточно самого простого (и дешевого) хостинга, минимальные требования:
 
-Требования и зависимости
-------------------------
-* PHP >= 5.3.7
+
+* PHP >= 5.3.3
 * Yiiframework >= 1.1.14
-* YiiBooster >= 2.0
+* YiiBooster >= 2.1
 * Nested Set Behavior
 * Imperavi Redactor Widget
 * Yii2-debug
@@ -43,14 +44,14 @@
 Ссылки
 ------
 * [Официальный сайт](http://yupe.ru/)
-* [Блог Юпи!](http://yupe.ru/index.php/blog/yupe-mini-cms-yii)
+* [Блог Юпи!](http://yupe.ru/blogs/yupe-mini-cms-yii)
 * [Репозиторий модулей](https://github.com/yupe/yupe-ext)
 * [Документация](http://yupe.ru/docs/index.html)
 * [API](http://api.yupe.ru/)
 * [Подробнее о проекте](http://yupe.ru/pages/about)
 * [Команда](http://yupe.ru/docs/yupe/team.html)
 * [Форум](http://yupe.ru/talk/)
-* [Контакты](http://yupe.ru/feedback/index)
+* [Контакты](http://yupe.ru/contacts)
 * [Как помочь проекту](http://yupe.ru/docs/yupe/assistance.project.html)
 * [twitter](https://twitter.com/#!/YupeCms)
 * [Коммерческая поддержка](http://amylabs.ru/contact)
@@ -89,4 +90,4 @@
 
 (c) 2009 - 2013 [amyLabs](http://amylabs.ru) && [Yupe! team](http://yupe.ru/)  ![Юпи!](http://yupe.ru/web/images/logo.png)
 
-![amyLabs](http://amylabs.ru/assets/fecc88d8/labs/logo.png)
+![amyLabs](http://amylabs.ru/images/logo.png)

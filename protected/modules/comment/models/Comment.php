@@ -37,12 +37,14 @@
 
 use application\modules\comment\components\NewCommentEvent;
 
-class Comment extends YModel
+class Comment extends yupe\models\YModel
 {
-
     const STATUS_NEED_CHECK = 0;
-    const STATUS_APPROVED = 1;
-    const STATUS_SPAM = 2;
+
+    const STATUS_APPROVED   = 1;
+
+    const STATUS_SPAM    = 2;
+
     const STATUS_DELETED = 3;
 
     public $verifyCode;
@@ -86,9 +88,9 @@ class Comment extends YModel
             array('model', 'length', 'max' => 100),
             array('ip', 'length', 'max' => 20),
             array('email', 'email'),
-            array('url', 'YUrlValidator'),
-            array('status', 'in', 'range' => array_keys($this->statusList)),
-            array('verifyCode', 'YRequiredValidator', 'allowEmpty' => !$module->showCaptcha || Yii::app()->user->isAuthenticated()),
+            array('url', 'yupe\components\validators\YUrlValidator'),
+            array('status', 'in', 'range' => array_keys($this->getStatusList())),
+            array('verifyCode', 'yupe\components\validators\YRequiredValidator', 'allowEmpty' => !$module->showCaptcha || Yii::app()->user->isAuthenticated()),
             array('verifyCode', 'captcha', 'allowEmpty' => !$module->showCaptcha || Yii::app()->user->isAuthenticated()),
             array('id, model, model_id, creation_date, name, email, url, text, status, ip, parent_id', 'safe', 'on' => 'search'),
         );
@@ -109,7 +111,7 @@ class Comment extends YModel
             'name' => Yii::t('CommentModule.comment', 'Name'),
             'email' => Yii::t('CommentModule.comment', 'Email'),
             'url' => Yii::t('CommentModule.comment', 'Site'),
-            'text' => Yii::t('CommentModule.comment', 'Text'),
+            'text' => Yii::t('CommentModule.comment', 'Comment'),
             'status' => Yii::t('CommentModule.comment', 'Status'),
             'verifyCode' => Yii::t('CommentModule.comment', 'Verification code'),
             'ip' => Yii::t('CommentModule.comment', 'IP address'),
@@ -186,7 +188,12 @@ class Comment extends YModel
         $criteria->compare('status', $this->status);
         $criteria->compare('ip', $this->ip, true);
 
-        return new CActiveDataProvider(get_class($this), array('criteria' => $criteria));
+        return new CActiveDataProvider(get_class($this), array(
+            'criteria' => $criteria,
+            'sort' => array(
+                'defaultOrder'=>'id DESC',
+             )
+        ));
     }
 
     /**
@@ -196,8 +203,7 @@ class Comment extends YModel
      **/
     public function beforeSave()
     {
-        if ($this->isNewRecord) {
-            // @TODO before migrate to NestedSets comments, please, comment row below and uncomment after migration
+        if ($this->isNewRecord) {            
             $this->creation_date = new CDbExpression('NOW()');
             $this->ip = Yii::app()->getRequest()->userHostAddress;
         }
@@ -215,12 +221,11 @@ class Comment extends YModel
         if ($cache = Yii::app()->getCache()) {
             $cache->delete("Comment{$this->model}{$this->model_id}");
         }
-
-        // проверка на наличие модуля - для корректной отработки мигратора на нестед сетс
-        // @TODO remove before release version 1.0
-        if ($this->isNewRecord && Yii::app()->hasModule('comment')) {
-            $notifierComponent = Yii::app()->getModule('comment')->notifier;
-            if (Yii::app()->getModule('comment')->notify && ($notifier = new $notifierComponent()) !== false && $notifier instanceof application\modules\comment\components\INotifier) {                 
+        
+        if ($this->isNewRecord) {
+            $module = Yii::app()->getModule('comment');
+            $notifierComponent = $module->notifier;
+            if ($this->level != 1 && $module->notify && ($notifier = new $notifierComponent()) !== false && $notifier instanceof application\modules\comment\components\INotifier) {                 
                 $this->onNewComment = array($notifier, 'newComment');
                 $this->newComment();
             }
@@ -254,7 +259,7 @@ class Comment extends YModel
             $event = new NewCommentEvent($this);
             $event->module = $module;
             $event->comment = $this;
-            $event->commentOwner = YModel::model($this->model)->findByPk($this->model_id);
+            $event->commentOwner = yupe\models\YModel::model($this->model)->findByPk($this->model_id);
 
             $this->onNewComment($event);
 
@@ -298,7 +303,7 @@ class Comment extends YModel
      **/
     public function getStatus()
     {
-        $list = $this->statusList;
+        $list = $this->getStatusList();
         return isset($list[$this->status]) ? $list[$this->status] : Yii::t('CommentModule.comment', 'Unknown status');
     }
 
@@ -309,7 +314,7 @@ class Comment extends YModel
      **/
     public function getAuthorName()
     {
-        return ($this->author) ? $this->author : $this->name;
+        return ($this->author) ? $this->author->nick_name : $this->name;
     }
 
 
@@ -359,7 +364,7 @@ class Comment extends YModel
      * @param $model_id
      * @return CActiveRecord Комментарий являющийся корнем дерева комментариев.
      */
-    public static function getRootOfCommentsTree($model, $model_id)
+    public function getRootOfCommentsTree($model, $model_id)
     {
         return self::model()->findByAttributes(
                     array(
@@ -370,12 +375,12 @@ class Comment extends YModel
                 );
     }
 
-    public static function createRootOfCommentsIfNotExists($model, $model_id)
+    public function createRootOfCommentsIfNotExists($model, $model_id)
     {
-        $rootNode = self::getRootOfCommentsTree($model, $model_id);
+        $rootNode = $this->getRootOfCommentsTree($model, $model_id);
 
-        if ($rootNode === null)
-        {
+        if ($rootNode === null){
+
             $rootAttributes = array(
                 "user_id" => Yii::app()->user->getId(),
                 "model" => $model,
@@ -385,13 +390,12 @@ class Comment extends YModel
                 "email" => "",
                 "text" => "",
                 "status" => self::STATUS_APPROVED,
-                "ip" => "127.0.0.1"
+                "ip" => Yii::app()->getRequest()->userHostAddress
             );
 
             $rootNode = new Comment();
             $rootNode->setAttributes($rootAttributes);
-            if($rootNode->saveNode(false))
-            {
+            if($rootNode->saveNode(false)){
                 return $rootNode;
             }
         }else{
@@ -401,36 +405,10 @@ class Comment extends YModel
         return false;
     }
 
-    /**
-     * Checks for flood messages
-     *
-     * @param Comment $comment Filled Comment Form
-     * @param $userId string Current User Id
-     * @param $interval int Interval between messages
-     * @return bool True if it is spam, False if not
-     */
-    public static function isItSpam(Comment $comment, $userId, $interval)
+    public function getLevel()
     {
-        $dateDiffTime = new DateTime();
-        $dateDiffTime->setTimestamp( time() - $interval );
+        $level = $this->level < 10 ? $this->level - 2 : 10;
 
-        $newAuthorComments = self::model()->findByAttributes(
-            array(
-                "user_id" => $userId,
-                "model" => $comment->getAttribute("model"),
-                "model_id" => $comment->getAttribute("model_id")
-            ),
-            "creation_date > :now OR (creation_date > :now AND text LIKE :txt)",
-            array(
-                'now' => $dateDiffTime->format('Y-m-d H:i:s'),
-                'txt' => "%{$comment->getAttribute('text')}%",
-            )
-        );
-
-        if($newAuthorComments!=null){
-            return true;
-        }
-
-        return false;
+        return $level > 0 ? $level : 0;
     }
 }

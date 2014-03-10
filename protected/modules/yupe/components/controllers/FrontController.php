@@ -30,10 +30,11 @@ class FrontController extends Controller
             Yii::app()->theme = $this->yupe->theme;
             $bootstrap = Yii::app()->theme->basePath . DIRECTORY_SEPARATOR . "bootstrap.php";
             if (is_file($bootstrap)) {
-                require($bootstrap);
+                require $bootstrap;
             }
         } else {
             Yii::app()->theme = 'default';
         }
     }
+
 }

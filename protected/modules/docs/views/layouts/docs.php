@@ -10,7 +10,7 @@
  **/
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<?php echo Yii::app()->language;?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,11 +25,11 @@
     );
     Yii::app()->clientScript->registerCssFile($mainAssets . '/css/styles.css');
     Yii::app()->clientScript->registerCssFile($docsAssets . '/css/main.css');
-    if (($langs = $this->yupe->languageSelectorArray) != array())
-        Yii::app()->clientScript->registerCssFile($mainAssets. '/css/flags.css');
 
-    if(Yii::app()->hasComponent('highlightjs'))
-        Yii::app()->highlightjs->loadClientScripts();
+    if (($langs = $this->yupe->languageSelectorArray) != array()) {
+        Yii::app()->clientScript->registerCssFile($mainAssets. '/css/flags.css');
+    }
+
     ?>
 </head>
 <body>
@@ -38,16 +38,16 @@
         <?php
         $this->widget(
             'bootstrap.widgets.TbNavbar', array(
-                'htmlOptions' => array('class' => 'navbar-inverse'),
+                'htmlOptions' => array('class' => 'navbar'),
                 'fluid'       => true,
                 'brand'       => CHtml::image(
-                         Yii::app()->baseUrl.'/web/images/logo.png',
-                         Yii::t('DocsModule.docs', 'Yupe! Documentation'),
-                         array(
-                            'width'  => '38',
-                            'height' => '38',
-                            'title'  => Yii::t('DocsModule.docs', 'Yupe! Documentation'),
-                         )
+                                     Yii::app()->baseUrl.'/web/images/logo.png',
+                                     Yii::t('DocsModule.docs', 'Yupe! Documentation'),
+                                     array(
+                                        'width'  => '38',
+                                        'height' => '38',
+                                        'title'  => Yii::t('DocsModule.docs', 'Yupe! Documentation'),
+                                     )
                 ),
                 'brandUrl'    => CHtml::normalizeUrl(array("index")),
                 'items'       => array(
@@ -62,14 +62,14 @@
                         'items'       => array_merge(
                             array(
                                 array(
-                                    'icon'        => 'home white',
+                                    'icon'        => 'home',
                                     'label'       => Yii::t('DocsModule.docs', 'Go home'),
                                     'linkOptions' => array('target' => '_blank'),
                                     'url'         => array('/' . Yii::app()->defaultController . '/index/'),
                                 ),
                                 array(
                                     'label' => $this->yupe->getVersion(),
-                                    'icon'  => 'icon-thumbs-up icon-white',
+                                    'icon'  => 'icon-thumbs-up',
                                     'url'   => 'http://yupe.ru/?from=doc-navbar'
                                 ),
                             ), $this->yupe->languageSelectorArray

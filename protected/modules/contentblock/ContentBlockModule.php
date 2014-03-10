@@ -30,7 +30,7 @@ class ContentBlockModule extends yupe\components\WebModule
 
     public function getVersion()
     {
-        return Yii::t('ContentBlockModule.contentblock', '0.2');
+        return Yii::t('ContentBlockModule.contentblock', '0.6');
     }
 
     public function getAuthor()
@@ -58,8 +58,7 @@ class ContentBlockModule extends yupe\components\WebModule
         parent::init();
 
         $this->setImport(array(
-            'contentblock.models.*',
-            'contentblock.components.*',
+            'contentblock.models.*',           
         ));
     }
 

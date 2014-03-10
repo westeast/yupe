@@ -12,6 +12,9 @@
  *
  */
 
+namespace yupe\helpers;
+use CHtmlPurifier;
+
 class YText
 {
     public static function translit($str)

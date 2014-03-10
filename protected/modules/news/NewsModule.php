@@ -19,8 +19,7 @@ class NewsModule extends WebModule
     public $allowedExtensions = 'jpg,jpeg,png,gif';
     public $minSize           = 0;
     public $maxSize           = 5368709120;
-    public $maxFiles          = 1;
-    public $mainCategory;
+    public $maxFiles          = 1;   
     public $rssCount          = 10;
     public $perPage           = 10;
 
@@ -99,7 +98,7 @@ class NewsModule extends WebModule
 
     public function getVersion()
     {
-        return Yii::t('NewsModule.news', '0.5');
+        return Yii::t('NewsModule.news', '0.6');
     }
 
     public function getIsInstallDefault()
@@ -155,19 +154,6 @@ class NewsModule extends WebModule
         );
     }
 
-    public function getCategoryList()
-    {
-        $criteria = ($this->mainCategory)
-            ? array(
-                'condition' => 'id = :id OR parent_id = :id',
-                'params'    => array(':id' => $this->mainCategory),
-                'order'     => 'id ASC',
-            )
-            : array();
-
-        return Category::model()->findAll($criteria);
-    }
-
     public function isMultiLang()
     {
         return true;
@@ -178,8 +164,7 @@ class NewsModule extends WebModule
         parent::init();
 
         $this->setImport(array(
-            'news.models.*',
-            'news.components.*',
+            'news.models.*'            
         ));
     }
 }

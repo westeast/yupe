@@ -7,7 +7,7 @@ Yii::import('application.modules.install.InstallModule');
 
 <h1><?php echo Yii::t('FeedbackModule.feedback','Contacts'); ?></h1>
 
-<?php $this->widget('application.modules.yupe.widgets.YFlashMessages'); ?>
+<?php $this->widget('yupe\widgets\YFlashMessages'); ?>
 
 <div class="alert alert-notice">
 
@@ -66,12 +66,19 @@ Yii::import('application.modules.install.InstallModule');
 
                 <?php echo $form->labelEx($model, 'verifyCode'); ?>
 
-                <?php $this->widget('CCaptcha', array(
-                    'showRefreshButton' => true,
-                    'clickableImage' => true,
-                    'buttonLabel' => 'обновить',
-                    'buttonOptions' => array('class' => 'captcha-refresh-link')
-                )); ?>
+                <?php $this->widget(
+                    'CCaptcha',
+                    array(
+                        'showRefreshButton' => true,
+                        'imageOptions' => array(
+                            'width' => '150',
+                        ),
+                        'buttonOptions' => array(
+                            'class' => 'btn',
+                        ),
+                        'buttonLabel' => '<i class="icon-repeat"></i>',
+                    )
+                ); ?>
 
                 <div class='row-fluid control-group <?php echo $model->hasErrors('verifyCode') ? 'error' : ''; ?>'>
                     <?php echo $form->textFieldRow($model, 'verifyCode', array('placeholder' => Yii::t('FeedbackModule.feedback', 'Insert symbols you see on image'),'class' => 'span6', 'required' => true)); ?>
@@ -89,31 +96,5 @@ Yii::import('application.modules.install.InstallModule');
         )
     ); ?>
 
-
     <?php $this->endWidget(); ?>
-</div>
-
-
-<div class="alert alert-success">
-
-    <p><?php echo Yii::t('InstallModule.install', 'Interesting links:'); ?></p>
-
-    <?php echo CHtml::link(Yii::t('InstallModule.install', 'Official docs'), 'http://yupe.ru/docs/index.html?from=contact'); ?>  - <?php echo Yii::t('InstallModule.install', 'We working with it'); ?>
-
-    <br/><br/>
-
-    <?php echo CHtml::link(Yii::t('InstallModule.install', 'Support Yupe forum'), 'http://yupe.ru/talk/'); ?>  - <?php echo Yii::t('InstallModule.install', 'All discussions here'); ?>
-
-    <br/><br/>
-
-    <?php echo CHtml::link(Yii::t('InstallModule.install', 'Official Yupe twitter'), 'https://twitter.com/#!/YupeCms'); ?>  - <?php echo Yii::t('InstallModule.install', 'Follow us'); ?>
-
-    <br/><br/>
-
-    <?php echo CHtml::link(Yii::t('InstallModule.install', 'Sources on GitHub'), 'http://github.com/yupe/yupe/'); ?> - <?php echo Yii::t('InstallModule.install', 'Send pull request'); ?>
-
-    <br/><br/>
-
-    <?php echo CHtml::link(Yii::t('InstallModule.install', 'General sponsor'), 'http://amylabs.ru?from=yupe-contact'); ?> - <?php echo Yii::t('InstallModule.install', 'Just good guys'); ?>
-
 </div>

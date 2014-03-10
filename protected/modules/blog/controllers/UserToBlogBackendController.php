@@ -12,6 +12,16 @@
 
 class UserToBlogBackendController extends yupe\components\controllers\BackController
 {
+    public function actions()
+    {
+        return array(
+            'inline' => array(
+                'class' => 'yupe\components\actions\YInLineEditAction',
+                'model' => 'UserToBlog',
+                'validAttributes' => array('status', 'role')
+            )
+        );
+    }
     /**
      * Отображает участника по указанному идентификатору
      * @param integer $id Идинтификатор участника для отображения
@@ -31,9 +41,6 @@ class UserToBlogBackendController extends yupe\components\controllers\BackContro
 
         try
         {
-            // Uncomment the following line if AJAX validation is needed
-            // $this->performAjaxValidation($model);
-
             if (isset($_POST['UserToBlog']))
             {
                 $model->attributes = $_POST['UserToBlog'];
@@ -41,7 +48,7 @@ class UserToBlogBackendController extends yupe\components\controllers\BackContro
                 if ($model->save())
                 {
                     Yii::app()->user->setFlash(
-                        YFlashMessages::SUCCESS_MESSAGE,
+                        yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                         Yii::t('BlogModule.blog', 'Member was added!')
                     );
 
@@ -56,11 +63,13 @@ class UserToBlogBackendController extends yupe\components\controllers\BackContro
         catch(Exception $e)
         {
             Yii::app()->user->setFlash(
-                YFlashMessages::WARNING_MESSAGE,
+                yupe\widgets\YFlashMessages::WARNING_MESSAGE,
                 Yii::t('BlogModule.blog', 'Cannot add user to the blog. Please make sure he is not a member already.')
             );
+
             $this->redirect(array('admin'));
         }
+
         $this->render('create', array('model' => $model));
     }
 
@@ -82,14 +91,16 @@ class UserToBlogBackendController extends yupe\components\controllers\BackContro
             if ($model->save())
             {
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('BlogModule.blog', 'Member was updated!')
                 );
 
-                if (!isset($_POST['submit-type']))
+                if (!isset($_POST['submit-type'])) {
                     $this->redirect(array('update', 'id' => $model->id));
-                else
+                }
+                else {
                     $this->redirect(array($_POST['submit-type']));
+                }
             }
         }
         $this->render('update', array('model' => $model));
@@ -108,16 +119,18 @@ class UserToBlogBackendController extends yupe\components\controllers\BackContro
             $this->loadModel($id)->delete();
 
             Yii::app()->user->setFlash(
-                YFlashMessages::SUCCESS_MESSAGE,
+                yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                 Yii::t('BlogModule.blog', 'Member was deleted!')
             );
 
             // если это AJAX запрос ( кликнули удаление в админском grid view), мы не должны никуда редиректить
-            if (!isset($_GET['ajax']))
+            if (!isset($_GET['ajax'])) {
                 $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('index'));
+            }
         }
-        else
+        else {
             throw new CHttpException(400, Yii::t('BlogModule.blog', 'Wrong request. Please don\'t repeate requests like this!'));
+        }
     }
 
     /**
@@ -127,8 +140,9 @@ class UserToBlogBackendController extends yupe\components\controllers\BackContro
     {
         $model = new UserToBlog('search');
         $model->unsetAttributes(); // clear any default values
-        if (isset($_GET['UserToBlog']))
+        if (isset($_GET['UserToBlog'])) {
             $model->attributes = $_GET['UserToBlog'];
+        }
         $this->render('index', array('model' => $model));
     }
 
@@ -136,12 +150,15 @@ class UserToBlogBackendController extends yupe\components\controllers\BackContro
      * Возвращает модель по указанному идентификатору
      * Если модель не будет найдена - возникнет HTTP-исключение.
      * @param integer идентификатор нужной модели
+     * @return UserToBlog $model
      */
     public function loadModel($id)
     {
         $model = UserToBlog::model()->findByPk($id);
-        if ($model === null)
+
+        if ($model === null) {
             throw new CHttpException(404, Yii::t('BlogModule.blog', 'Requested page was not found!'));
+        }
         return $model;
     }
 

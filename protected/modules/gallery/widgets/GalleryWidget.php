@@ -12,9 +12,9 @@
  *
  */
 
-Yii::import('application.modules.gallery.models.ImageToGallery');
+Yii::import('application.modules.gallery.models.*');
 
-class GalleryWidget extends YWidget
+class GalleryWidget extends yupe\widgets\YWidget
 {
     // сколько изображений выводить на одной странице
     public $limit = 10;

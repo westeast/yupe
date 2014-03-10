@@ -15,6 +15,8 @@ use yupe\components\WebModule;
 
 class CommentModule extends WebModule
 {
+    const VERSION = '0.7';
+
     public $notifier = 'application\modules\comment\components\Notifier';
     public $defaultCommentStatus;
     public $autoApprove          = true;
@@ -25,8 +27,9 @@ class CommentModule extends WebModule
     public $minCaptchaLength = 3;
     public $maxCaptchaLength = 6;
     public $rssCount         = 10;
-    public $antispamInterval = 10;
+    public $antispamInterval = 5;
     public $allowedTags;
+    public $allowGuestComment = 0;
 
     public function getDependencies()
     {
@@ -48,13 +51,15 @@ class CommentModule extends WebModule
             'maxCaptchaLength'     => Yii::t('CommentModule.comment', 'Maximum captcha length'),
             'rssCount'             => Yii::t('CommentModule.comment', 'RSS records count'),
             'allowedTags'          => Yii::t('CommentModule.comment', 'Accepted tags'),
-            'antispamInterval'     => Yii::t('CommentModule.comment', 'Antispam interval')
+            'antispamInterval'     => Yii::t('CommentModule.comment', 'Antispam interval'),
+            'allowGuestComment'    => Yii::t('CommentModule.comment', 'Guest can comment ?')
         );
     }
 
     public function getEditableParams()
     {
         return array(
+            'allowGuestComment'    => $this->getChoice(),  
             'defaultCommentStatus' => Comment::model()->getStatusList(),
             'autoApprove'          => $this->getChoice(),
             'notify'               => $this->getChoice(),
@@ -117,7 +122,7 @@ class CommentModule extends WebModule
                         '{{count}}' => $count,
                         '{{link}}'  => CHtml::link(
                             Yii::t('CommentModule.comment', 'Comments moderation'), array(
-                                    '/comment/commentBackend/index/order/status.asc/Comment_sort/status/',
+                                    '/comment/commentBackend/index','Comment[status]' => Comment::STATUS_NEED_CHECK,
                             )
                         ),
                     )
@@ -134,7 +139,7 @@ class CommentModule extends WebModule
 
     public function getVersion()
     {
-        return Yii::t('CommentModule.comment', '0.5.4');
+        return Yii::t('CommentModule.comment', self::VERSION);
     }
 
     public function getAuthor()
@@ -174,7 +179,7 @@ class CommentModule extends WebModule
     {
         parent::init();
 
-        $import = count($this->import) ? array_merge(array('comment.models.*',$this->import)) : array('comment.models.*');
+        $import = count($this->import) ? array_merge(array('comment.models.*'), $this->import) : array('comment.models.*');
 
         $this->setImport($import);
 

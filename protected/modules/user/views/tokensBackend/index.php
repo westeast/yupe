@@ -1,6 +1,5 @@
 <?php
-    $this->breadcrumbs = array(
-        Yii::app()->getModule('user')->getCategory() => array(),
+    $this->breadcrumbs = array(        
         Yii::t('UserModule.user', 'Users') => array('/user/userBackend/index'),
         Yii::t('UserModule.user', 'Tokens') => array('/user/tokensBackend/index'),
         Yii::t('UserModule.user', 'Token management'),
@@ -67,7 +66,7 @@ SCRIPT;
             ),
             array(
                 'name'        => 'status',
-                'value'       => 'UserToken::getStatus($data->status)',
+                'value'       => '$data->getStatus()',
                 'htmlOptions' => array(
                     'style'  => implode(
                         ' ', array(

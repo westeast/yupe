@@ -51,6 +51,9 @@ class FeedbackBackendController extends yupe\components\controllers\BackControll
     {
         $model = new FeedBack;
 
+        $model->email = Yii::app()->user->getState('email');
+        $model->name  = Yii::app()->user->getFullName();
+
         if (($data = Yii::app()->getRequest()->getPost('FeedBack')) !== null) {
             
             $model->setAttributes($data);
@@ -62,7 +65,7 @@ class FeedbackBackendController extends yupe\components\controllers\BackControll
 
             if ($model->save()) {
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('FeedbackModule.feedback', 'Message saved!')
                 );
 
@@ -100,7 +103,7 @@ class FeedbackBackendController extends yupe\components\controllers\BackControll
 
             if ($model->save()) {
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('FeedbackModule.feedback', 'Message was updated')
                 );
 
@@ -167,7 +170,7 @@ class FeedbackBackendController extends yupe\components\controllers\BackControll
 
         if ($model->status == FeedBack::STATUS_ANSWER_SENDED) {
             Yii::app()->user->setFlash(
-                YFlashMessages::SUCCESS_MESSAGE,
+                yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                 Yii::t('FeedbackModule.feedback', 'Attention! Reply for this message already sent!')
             );
         }
@@ -213,7 +216,7 @@ class FeedbackBackendController extends yupe\components\controllers\BackControll
 
                     if (Yii::app()->getRequest()->getIsAjaxRequest() == false) {
                         Yii::app()->user->setFlash(
-                            YFlashMessages::SUCCESS_MESSAGE,
+                            yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                             Yii::t('FeedbackModule.feedback', 'Reply on message was sent!')
                         );
 

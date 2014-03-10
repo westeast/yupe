@@ -8,13 +8,21 @@
  * @license  BSD http://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F_BSD
  * @link     http://yupe.ru
  */
+namespace yupe\components\urlManager;
+
+use CBehavior;
+use Yii;
+use Exception;
+use CException;
+use yupe\widgets\YFlashMessages;
+use CHttpCookie;
+
 class LanguageBehavior extends CBehavior
 {
     public $lang          = false;
 
     private $_lang        = false;
     private $_defaultLang = false;
-    private $_appLang     = false;
 
     /**
      * Подключение события:
@@ -104,9 +112,13 @@ class LanguageBehavior extends CBehavior
                         : $this->getDefaultLang();
         }
 
-        $reqLang = substr(Yii::app()->getRequest()->getPathInfo(), 0, 2);
-        $reqLang = current(explode('/', Yii::app()->getRequest()->getPathInfo()));
+        // $reqLang = substr(Yii::app()->getRequest()->getPathInfo(), 0, 2);
+        //$reqLang = current(explode('/', Yii::app()->getRequest()->getPathInfo()));
         
+        // add support to zh_cn
+        $path = explode('/', Yii::app()->getRequest()->getPathInfo());
+        $reqLang = $path[0];
+                
 
         return in_array($reqLang, $lm->languages)
             ? $reqLang
@@ -138,13 +150,11 @@ class LanguageBehavior extends CBehavior
         $path = Yii::app()->getRequest()->getPathInfo();
 
         // Проверяем переданный язык:
-        
-        $langIsset = (
-            isset($_GET[$lm->langParam]) || $path == $this->getLang() || substr($path, 2, 1) == '/' || substr($path, 5, 1) == '/'
-        );
 
-        $this->setLanguage(
-            $this->getDefaultLang()
+
+        // Add support to lang zh_cn;
+        $langIsset = (
+            isset($_GET[$lm->langParam]) || $path == $this->getLang() || substr($path, strlen($this->getLang()), 1) == '/'
         );
 
         $this->setLanguage(

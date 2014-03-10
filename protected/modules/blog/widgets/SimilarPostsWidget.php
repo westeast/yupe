@@ -10,8 +10,9 @@
  * @since 0.1
  *
  */
+Yii::import('application.modules.blog.models.*');
 
-class SimilarPostsWidget extends YWidget
+class SimilarPostsWidget extends yupe\widgets\YWidget
 {
     public $limit = 10;
 
@@ -28,7 +29,7 @@ class SimilarPostsWidget extends YWidget
         $criteria->addNotInCondition('t.id', array($this->post->id));
 
         $criteria->mergeWith(
-            Post::model()->getFindByTagsCriteria($this->post->getTags())
+            Post::model()->public()->published()->getFindByTagsCriteria($this->post->getTags())
         );
         
         $posts = Post::model()->findAll(

@@ -6,7 +6,7 @@
  * @package  yupe.modules.user.controllers.account
  * @author   YupeTeam <team@yupe.ru>
  * @license  BSD http://ru.wikipedia.org/wiki/%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F_BSD
- * @version  0.6
+ * @version  0.7
  * @link     http://yupe.ru
  *
  **/
@@ -28,6 +28,8 @@ class RecoveryPasswordAction extends CAction
 
         $module = Yii::app()->getModule('user');
 
+        $module->onBeginPasswordRecovery(new CEvent($this->controller, array("token" => $token)));
+
         // Если запрещено восстановление - печалька ;)
         if ($module->recoveryDisabled) {
             throw new CHttpException(404, Yii::t('UserModule.user', 'requested page was not found!'));
@@ -39,8 +41,12 @@ class RecoveryPasswordAction extends CAction
             if (Yii::app()->userManager->activatePassword($token)) {
 
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('UserModule.user', 'New password was sent to your email')
+                );
+
+                $module->onSuccessAutoPasswordRecovery(
+                    new CEvent($this->controller, array("token" => $token))
                 );
 
                 $this->controller->redirect(array('/user/account/login'));
@@ -48,8 +54,12 @@ class RecoveryPasswordAction extends CAction
             } else {
 
                 Yii::app()->user->setFlash(
-                    YFlashMessages::ERROR_MESSAGE,
+                    yupe\widgets\YFlashMessages::ERROR_MESSAGE,
                     Yii::t('UserModule.user', 'Error when changing password!')
+                );
+
+                $module->onErrorAutoPasswordRecovery(
+                    new CEvent($this->controller, array("token" => $token))
                 );
 
                 $this->controller->redirect(array('/user/account/recovery'));
@@ -62,26 +72,27 @@ class RecoveryPasswordAction extends CAction
         // Получаем данные POST если таковые имеются:
         if (($data = Yii::app()->getRequest()->getPost('ChangePasswordForm')) !== null) {
 
-            // Заполняем поля формы POST-данными:
             $changePasswordForm->setAttributes($data);
 
             // Проводим валидацию формы:
             if ($changePasswordForm->validate() && Yii::app()->userManager->activatePassword($token, $changePasswordForm->password)) {
 
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('UserModule.user', 'Password recover successfully')
                 );
 
-                $this->controller->redirect(array('/user/account/login'));
-            } else {
-
-                Yii::app()->user->setFlash(
-                    YFlashMessages::ERROR_MESSAGE,
-                    Yii::t('UserModule.user', 'Error when changing password!')
+                $module->onSuccessPasswordRecovery(
+                    new CModelEvent($this->controller, array("changePasswordForm" => $changePasswordForm))
                 );
 
-                $this->controller->redirect(array('/user/account/recovery'));
+                $this->controller->redirect(array('/user/account/login'));
+
+            }else{
+
+                $module->onErrorPasswordRecovery(
+                    new CModelEvent($this->controller, array("changePasswordForm" => $changePasswordForm))
+                );
             }
         }
 

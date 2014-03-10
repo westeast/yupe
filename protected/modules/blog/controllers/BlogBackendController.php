@@ -11,6 +11,17 @@
  */
 class BlogBackendController extends yupe\components\controllers\BackController
 {
+    public function actions()
+    {
+        return array(
+            'inline' => array(
+                'class' => 'yupe\components\actions\YInLineEditAction',
+                'model' => 'Blog',
+                'validAttributes' => array('name', 'slug', 'status', 'type')
+            )
+        );
+    }
+
     /**
      * Отображает блог по указанному идентификатору
      * @throws CHttpException
@@ -20,10 +31,12 @@ class BlogBackendController extends yupe\components\controllers\BackController
      **/
     public function actionView($id)
     {
-        if (($model = Blog::model()->loadModel($id)) !== null)
+        if (($model = Blog::model()->loadModel($id)) !== null) {
             $this->render('view', array('model' => $model));
-        else
+        }
+        else {
             throw new CHttpException(404, Yii::t('BlogModule.blog', 'Page was not found!'));
+        }
     }
 
     /**
@@ -36,15 +49,13 @@ class BlogBackendController extends yupe\components\controllers\BackController
     {
         $model = new Blog;
 
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-
         if (Yii::app()->getRequest()->getIsPostRequest() && Yii::app()->getRequest()->getPost('Blog') !== null) {
+
             $model->setAttributes(Yii::app()->getRequest()->getPost('Blog'));
 
             if ($model->save()) {
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('BlogModule.blog', 'Blog was added!')
                 );
                 $this->redirect(
@@ -61,22 +72,20 @@ class BlogBackendController extends yupe\components\controllers\BackController
      * Редактирование блога.
      *
      * @param integer $id Идинтификатор блога для редактирования
-     *
+     * @throw CHttpException
      * @return nothing
      **/
     public function actionUpdate($id)
     {
-        if (($model = Blog::model()->loadModel($id)) === null)
+        if (($model = Blog::model()->loadModel($id)) === null) {
             throw new CHttpException(404, Yii::t('BlogModule.blog', 'Page was not found!'));
-
-        // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
+        }
 
         if (Yii::app()->getRequest()->getIsPostRequest() && Yii::app()->getRequest()->getPost('Blog') !== null) {
             $model->setAttributes(Yii::app()->getRequest()->getPost('Blog'));
             if ($model->save()) {
                 Yii::app()->user->setFlash(
-                    YFlashMessages::SUCCESS_MESSAGE,
+                    yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                     Yii::t('BlogModule.blog', 'Blog was updated!')
                 );
                 $this->redirect(
@@ -89,6 +98,7 @@ class BlogBackendController extends yupe\components\controllers\BackController
                 );
             }
         }
+
         $this->render('update', array('model' => $model));
     }
 
@@ -111,7 +121,7 @@ class BlogBackendController extends yupe\components\controllers\BackController
             $model->delete();
 
             Yii::app()->user->setFlash(
-                YFlashMessages::SUCCESS_MESSAGE,
+                yupe\widgets\YFlashMessages::SUCCESS_MESSAGE,
                 Yii::t('BlogModule.blog', 'Blog was deleted!')
             );
 
@@ -150,5 +160,4 @@ class BlogBackendController extends yupe\components\controllers\BackController
             Yii::app()->end();
         }
     }
-
 }

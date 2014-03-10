@@ -1,6 +1,5 @@
 <?php
-    $this->breadcrumbs = array(
-        Yii::app()->getModule('image')->getCategory() => array(),
+    $this->breadcrumbs = array(       
         Yii::t('ImageModule.image', 'Images') => array('/image/imageBackend/index'),
         Yii::t('ImageModule.image', 'Management'),
     );
@@ -58,9 +57,14 @@ $this->widget(
                 'filter' => false
             ),
             array(
+                'header' => Yii::t('ImageModule.image', 'Link'),
+                'type'   => 'raw',
+                'value'  => 'CHtml::link($data->getRawUrl(), $data->getRawUrl())'
+            ),
+            array(
                 'name'   => 'category_id',
                 'value'  => '$data->getCategoryName()',
-                'filter' => CHtml::listData(Yii::app()->getModule('image')->getCategoryList(),'id','name')
+				'filter' => CHtml::activeDropDownList($model, 'category_id', Category::model()->getFormattedList(Yii::app()->getModule('image')->mainCategory), array('encode' => false, 'empty' => ''))
             ),
             array(
                 'name'   => 'galleryId',
@@ -74,8 +78,7 @@ $this->widget(
                                 array("/gallery/galleryBackend/images", "id" => $data->gallery->id)
                             )',
             ),
-            'name',
-            'alt',
+            'name',           
             array(
                 'class'       => 'bootstrap.widgets.TbButtonColumn',
                 'htmlOptions' => array(

@@ -66,7 +66,7 @@ class GalleryModule extends yupe\components\WebModule
 
     public function getIcon()
     {
-        return "picture";
+        return "camera-retro";
     }
 
     public function getAdminPageLink()
@@ -79,8 +79,7 @@ class GalleryModule extends yupe\components\WebModule
         parent::init();
 
         $this->setImport(array(
-            'gallery.models.*',
-            'gallery.components.*',
+            'gallery.models.*'          
         ));
     }
 

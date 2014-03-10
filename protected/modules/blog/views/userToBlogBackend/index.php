@@ -69,6 +69,21 @@ $this->renderPartial('_search', array('model' => $model));
         'type'         => 'condensed',
         'dataProvider' => $model->search(),
         'filter'       => $model,
+        'bulkActions'      => array(
+            'actionButtons' => array(
+                array(
+                    'id'         => 'delete-comment',
+                    'buttonType' => 'button',
+                    'type'       => 'danger',
+                    'size'       => 'small',
+                    'label'      => Yii::t('BlogModule.blog', 'Delete'),
+                    'click'      => 'js:function(values){ if(!confirm("' . Yii::t('BlogModule.blog', 'Do you really want to delete selected elements?') . '")) return false; multiaction("delete", values); }',
+                ),
+            ),
+            'checkBoxColumnConfig' => array(
+                'name' => 'id'
+            ),
+        ),
         'columns'      => array(
             'id',
             array(
@@ -84,15 +99,35 @@ $this->renderPartial('_search', array('model' => $model));
                 'filter' => CHtml::listData(Blog::model()->cache($this->yupe->coreCacheTime)->findAll(),'id','name')
             ),
             array(
+                'class'  => 'bootstrap.widgets.TbEditableColumn',
+                'editable' => array(
+                    'url'  => $this->createUrl('/blog/userToBlogBackend/inline'),
+                    'mode' => 'popup',
+                    'type' => 'select',
+                    'source' => $model->getRoleList(),
+                    'params' => array(
+                        Yii::app()->request->csrfTokenName => Yii::app()->request->csrfToken
+                    )
+                ),
                 'name'   => 'role',
                 'type'   => 'raw',
-                'value'  => '$this->grid->returnBootstrapStatusHtml($data, "role", "Role", array(1 => "user", 2 => "eye-open", 3 => "asterisk"))',
+                'value'  => '$data->getRole()',
                 'filter' => $model->getRoleList()
             ),
             array(
-                'name'  => 'status',
-                'type'  => 'raw',
-                'value' => '$this->grid->returnBootstrapStatusHtml($data, "status", "Status", array(1 => "ok-sign", 2 => "lock"))',
+                'class'  => 'bootstrap.widgets.TbEditableColumn',
+                'editable' => array(
+                    'url'  => $this->createUrl('/blog/userToBlogBackend/inline'),
+                    'mode' => 'popup',
+                    'type' => 'select',
+                    'source' => $model->getStatusList(),
+                    'params' => array(
+                        Yii::app()->request->csrfTokenName => Yii::app()->request->csrfToken
+                    )
+                ),
+                'name'   => 'status',
+                'type'   => 'raw',
+                'value'  => '$data->getStatus()',
                 'filter' => $model->getStatusList()
             ),
             'note',

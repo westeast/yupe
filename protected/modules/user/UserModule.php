@@ -5,7 +5,7 @@
  *
  * @author yupe team <team@yupe.ru>
  * @link http://yupe.ru
- * @copyright 2009-2013 amyLabs && Yupe! team
+ * @copyright 2009-2014 amyLabs && Yupe! team
  * @package yupe.modules.user
  * @since 0.1
  *
@@ -18,14 +18,14 @@ class UserModule extends WebModule
 {
     public $accountActivationSuccess       = '/user/account/login';
     public $accountActivationFailure       = '/user/account/registration';
-    public $loginSuccess;
+    public $loginSuccess                   = '/';
     public $registrationSuccess            = '/user/account/login';
-    public $loginAdminSuccess              = '';
-    public $logoutSuccess;
+    public $loginAdminSuccess              = '/yupe/backend/index';
+    public $logoutSuccess                  = '/';
     public $sessionLifeTime                = 7;
 
     public $notifyEmailFrom;
-    public $autoRecoveryPassword           = true;
+    public $autoRecoveryPassword           = false;
     public $recoveryDisabled               = false;
     public $registrationDisabled           = false;
     public $minPasswordLength              = 8;
@@ -38,6 +38,7 @@ class UserModule extends WebModule
     public $avatarMaxSize                  = 10000;
     public $defaultAvatar                  = '/web/images/avatar.png';
     public $avatarExtensions               = array('jpg', 'png', 'gif');
+    public $usersPerPage                   = 20;
 
     public $registrationActivateMailEvent  = 'USER_REGISTRATION_ACTIVATE';
     public $registrationMailEvent          = 'USER_REGISTRATION';
@@ -48,7 +49,6 @@ class UserModule extends WebModule
 
     public static $logCategory             = 'application.modules.user';    
     public $profiles                       = array();
-    public $attachedProfileEvents          = array();
 
     public function getUploadPath()
     {
@@ -126,8 +126,9 @@ class UserModule extends WebModule
             'avatarMaxSize'                  => Yii::t('UserModule.user', 'Maximum avatar size'),
             'defaultAvatar'                  => Yii::t('UserModule.user', 'Empty avatar'),
             'loginAdminSuccess'              => Yii::t('UserModule.user', 'Page after admin authorization'),
-            'registrationSuccess  '             => Yii::t('UserModule.user', 'Page after success register'),
+            'registrationSuccess'            => Yii::t('UserModule.user', 'Page after success register'),
             'sessionLifeTime'                => Yii::t('UserModule.user', 'Session lifetime (in days) when "Remember me" options enabled'),
+            'usersPerPage'                   => Yii::t('UserModule.user', 'Users per page'),
         );
     }
 
@@ -157,8 +158,10 @@ class UserModule extends WebModule
             'accountActivationSuccess',
             'accountActivationFailure',
             'loginAdminSuccess',
-            'registrationSuccess  ',
-            'sessionLifeTime'
+            'registrationSuccess',
+            'sessionLifeTime',
+            'usersPerPage',
+            'emailAccountVerification'  => $this->getChoice(),
         );
     }
 
@@ -172,10 +175,19 @@ class UserModule extends WebModule
                     'sessionLifeTime'
                 )
             ),
+             'avatar' => array(
+                'label' => Yii::t('UserModule.user', 'Avatar'),
+                'items' => array(
+                    'avatarsDir',
+                    'avatarMaxSize',
+                    'defaultAvatar'
+                )
+            ),
             'security' => array(
                 'label' => Yii::t('UserModule.user', 'Security settings'),
                 'items' => array(
                 	'registrationDisabled',
+                    'recoveryDisabled',
                     'emailAccountVerification',
                     'minPasswordLength',
                     'autoRecoveryPassword',
@@ -274,7 +286,7 @@ class UserModule extends WebModule
 
     public function getVersion()
     {
-        return Yii::t('UserModule.user', '0.5');
+        return Yii::t('UserModule.user', '0.6');
     }
 
     public function getIcon()
@@ -298,40 +310,266 @@ class UserModule extends WebModule
 
     public function init()
     {
-        parent::init();
-
-        $homeUrl = '/' . Yii::app()->defaultController . '/index';
-
-        if (!$this->loginSuccess)
-            $this->loginSuccess = $homeUrl;
-
-        if (!$this->logoutSuccess)
-            $this->logoutSuccess = $homeUrl;
-
         $this->setImport(array(
             'user.models.*',
             'user.components.*',
             'user.widgets.AvatarWidget'
         ));
 
-        if (is_array($this->attachedProfileEvents))
-        {
-            foreach ($this->attachedProfileEvents as $e)
-            {
-                $this->attachEventHandler("onBeginRegistration", array($e, "onBeginRegistration"));
-                $this->attachEventHandler("onBeginProfile", array($e, "onBeginProfile"));
-            }
-        }
+        parent::init();
     }
 
+    /**
+     * Событие происходящее в момент входа пользователя на страницу регистрации.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['registrationForm'] передается объект формы RegistrationForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
     public function onBeginRegistration($event)
     {
         $this->raiseEvent('onBeginRegistration', $event);
     }
 
+    /**
+     * Событие происходящее при успешной регистрации пользователя.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['user'] передается объект класса User.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessRegistration($event)
+    {
+        $this->raiseEvent('onSuccessRegistration', $event);
+    }
+
+    /**
+     * Событие происходящее при ошибке регистрации.
+     * Возникает при неправильной валидации или при ошибке записи в базу нового пользователя
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['registrationForm'] передается объект формы RegistrationForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorRegistration($event)
+    {
+        $this->raiseEvent('onErrorRegistration', $event);
+    }
+
+    /**
+     * Событие происходящее при запросе на восстановление пароля.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['token'] передается Token восстановления.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onBeginPasswordRecovery($event)
+    {
+        $this->raiseEvent('onBeginPasswordRecovery', $event);
+    }
+
+    /**
+     * Событие возникающее при успшеном автоматическом восстановлении пароля
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['token'] передается Token восстановления.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessAutoPasswordRecovery($event)
+    {
+        $this->raiseEvent('onSuccessAutoPasswordRecovery', $event);
+    }
+
+    /**
+     * Событие возникающее при ошибке автоматического восстановления пароля.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['token'] передается Token восстановления.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorAutoPasswordRecovery($event)
+    {
+        $this->raiseEvent('onErrorAutoPasswordRecovery', $event);
+    }
+
+    /**
+     * Событие возникающее при успешной ручной смене пароля.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['changePasswordForm'] передается объект ChangePasswordForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessPasswordRecovery($event)
+    {
+        $this->raiseEvent('onSuccessPasswordRecovery', $event);
+    }
+
+    /**
+     * Событие возникающее при ошибке ручного восстановления пароля.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['changePasswordForm'] передается объект ChangePasswordForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorPasswordRecovery($event)
+    {
+        $this->raiseEvent('onErrorPasswordRecovery', $event);
+    }
+
+    /**
+    * Событие возникающее при активации экшена запроса восстановления пароля.
+    * В качестве отправителя выступает объект класса AccountController
+    * Параметром $params['recoveryForm'] передается объект RecoveryForm.
+    * @param CModelEvent $event
+    * @since 0.7
+    */
+    public function onBeginRecovery($event)
+    {
+        $this->raiseEvent('onBeginRecovery', $event);
+    }
+
+    /**
+     * Событие возникающее при успешном запросе восстановления пароля.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['recoveryForm'] передается объект RecoveryForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessRecovery($event)
+    {
+        $this->raiseEvent('onSuccessRecovery', $event);
+    }
+
+    /**
+     * Событие возникающее при ошибке запроса восстановления пароля.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['recoveryForm'] передается объект RecoveryForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorRecovery($event)
+    {
+        $this->raiseEvent('onErrorRecovery', $event);
+    }
+
+    /**
+     * Событие возникающее при входе пользователя на страницу редактирования профиля.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['profileForm'] передается объект ProfileForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
     public function onBeginProfile($event)
     {
         $this->raiseEvent('onBeginProfile', $event);
+    }
+
+    /**
+     * Событие возникающее при успешном обновлении профиля пользователя.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['profileForm'] передается объект ProfileForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessEditProfile($event)
+    {
+        $this->raiseEvent('onSuccessEditProfile', $event);
+    }
+
+    /**
+     * Событие возникающее при ошибке обновления профиля пользователя.
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['profileForm'] передается объект ProfileForm.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorEditProfile($event)
+    {
+        $this->raiseEvent('onErrorEditProfile', $event);
+    }
+
+    /**
+     * Событие возникающее при выходе пользователя из Аккаунта
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['user'] передается объект пользователя который совершает выход.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onLogout($event)
+    {
+        $this->raiseEvent('onLogout', $event);
+    }
+
+    /**
+     * Событие возникающее при успешном входе пользователя
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['loginForm'] передается объект формы авторизации.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessLogin($event)
+    {
+        $this->raiseEvent('onSuccessLogin', $event);
+    }
+
+    /**
+     * Событие возникающее при ошибке входа пользователя
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['loginForm'] передается объект формы авторизации.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorLogin($event)
+    {
+        $this->raiseEvent('onErrorLogin', $event);
+    }
+
+    /**
+     * Событие возникающее при успешном подтверждании e-mail
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['token'] передается Token подтверждения e-mail.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessEmailConfirm($event)
+    {
+        $this->raiseEvent('onSuccessEmailConfirm', $event);
+    }
+
+    /**
+     * Событие возникающее при ошибке подтверждания e-mail
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['token'] передается Token подтверждения e-mail.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorEmailConfirm($event)
+    {
+        $this->raiseEvent('onErrorEmailConfirm', $event);
+    }
+
+    /**
+     * Событие возникающее при успешной активации аккаунта
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['token'] передается Token активации.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onSuccessActivate($event)
+    {
+        $this->raiseEvent('onSuccessActivate', $event);
+    }
+
+    /**
+     * Событие возникающее при ошибке активации аккаунта
+     * В качестве отправителя выступает объект класса AccountController
+     * Параметром $params['token'] передается Token активации.
+     * @param CModelEvent $event
+     * @since 0.7
+     */
+    public function onErrorActivate($event)
+    {
+        $this->raiseEvent('onErrorActivate', $event);
     }
 
 }

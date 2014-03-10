@@ -46,20 +46,24 @@ $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
             <?php
             echo $form->datepickerRow(
                 $model, 'date', array(
-                    'prepend' => '<i class="icon-calendar"></i>',
                     'options' => array(
                         'format'    => 'dd.mm.yyyy',
                         'weekStart' => 1,
                         'autoclose' => true,
                     ),
-                    'class'   => 'span11'
+                    'htmlOptions'   => array(
+                        'class' => 'span11'
+                    ),
+                ),
+                array(
+                    'prepend' => '<i class="icon-calendar"></i>',
                 )
             ); ?>
         </div>
     </div>
 
     <div class="row-fluid control-group <?php echo $model->hasErrors('category_id') ? 'error' : ''; ?>">
-        <?php echo $form->dropDownListRow($model, 'category_id', Category::model()->getFormattedList(), array('class' => 'span7 popover-help','empty' => Yii::t('NewsModule.news', '--choose--'), 'encode' => false)); ?>
+        <?php echo $form->dropDownListRow($model, 'category_id', Category::model()->getFormattedList((int)Yii::app()->getModule('news')->mainCategory), array('class' => 'span7 popover-help','empty' => Yii::t('NewsModule.news', '--choose--'), 'encode' => false)); ?>
     </div>
 
     <div class="row-fluid control-group <?php echo $model->hasErrors('title') ? 'error' : ''; ?>">

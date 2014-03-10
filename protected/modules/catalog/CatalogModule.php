@@ -13,8 +13,7 @@
 use yupe\components\WebModule;
 
 class CatalogModule extends WebModule
-{
-    public $mainCategory;
+{   
     public $uploadPath        = 'catalog';
     public $allowedExtensions = 'jpg,jpeg,png,gif';
     public $minSize           = 0;
@@ -59,8 +58,9 @@ class CatalogModule extends WebModule
 
     public function getInstall()
     {
-        if(parent::getInstall())
+        if(parent::getInstall()) {
             @mkdir($this->getUploadPath(),0755);
+        }
 
         return false;
     }
@@ -106,7 +106,7 @@ class CatalogModule extends WebModule
     
     public function getVersion()
     {
-        return '0.2';
+        return '0.6';
     }
 
     public function getCategory()
@@ -153,18 +153,5 @@ class CatalogModule extends WebModule
             'catalog.components.*',
             //'category.models.*',
         ));
-    }
-
-    public function getCategoryList()
-    {
-        $criteria = ($this->mainCategory)
-            ? array(
-                'condition' => 'id = :id OR parent_id = :id',
-                'params'    => array(':id' => $this->mainCategory),
-                'order'     => 'id ASC',
-            )
-            : array();
-
-        return Category::model()->findAll($criteria);
-    }
+    }  
 }

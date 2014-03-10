@@ -1,6 +1,5 @@
 <?php
-    $this->breadcrumbs = array(
-        Yii::app()->getModule('feedback')->getCategory() => array(),
+    $this->breadcrumbs = array(      
         Yii::t('FeedbackModule.feedback', 'Messages ') => array('/feedback/feedbackBackend/index'),
         $model->theme => array('/feedback/feedbackBackend/view', 'id' => $model->id),
         Yii::t('FeedbackModule.feedback', 'Reply'),
@@ -100,7 +99,7 @@
                       'model'       => $answerForm,
                       'attribute'   => 'answer',
                       'options'     => array(
-                           'imageUpload' => Yii::app()->baseUrl.'/index.php/yupe/backend/AjaxFileUpload/',
+                           'imageUpload' => Yii::app()->baseUrl.'/index.php/yupe/backend/AjaxImageUpload/',
                        ),
                       'htmlOptions' => array('rows' => 20,'cols' => 6),
                  )); ?>

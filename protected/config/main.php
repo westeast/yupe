@@ -7,7 +7,7 @@
  * ИЗМЕНЕНИЯ В ДАННОМ ФАЙЛЕ МОГУТ ПРИВЕСТИ К ПОТЕРЕ РАБОТОСПОСОБНОСТИ
  * Для собственных настроек создайте и используйте "/protected/config/userspace.php"
  * Подробную информацию по использованию "userspace" можно узнать из официальной
- * документации.
+ * документаци - http://yupe.ru/docs/yupe/userspace.config.html
  *
  * @category YupeConfig
  * @package  Yupe
@@ -32,6 +32,7 @@ return array(
     'sourceLanguage'    => 'en',
     'theme'             => 'default',          // тема оформления по умолчанию
     'charset'           => 'UTF-8',
+    'controllerNamespace' => 'application\controllers',
     'preload'           => defined('YII_DEBUG')
                             && YII_DEBUG
                             && is_writable(Yii::getPathOfAlias('application.runtime'))
@@ -69,7 +70,9 @@ return array(
         ),*/
     ),
     'behaviors' => array(
-        'onBeginRequest' => array('class' => 'application.modules.yupe.components.urlManager.LanguageBehavior'),
+        'onBeginRequest' => array(
+            'class' => 'yupe\components\urlManager\LanguageBehavior'
+         ),
     ),
     'params' => require dirname(__FILE__) . '/params.php',
     // конфигурирование основных компонентов (подробнее http://www.yiiframework.ru/doc/guide/ru/basics.component)
@@ -87,6 +90,9 @@ return array(
         ),
         'configManager' => array(
             'class' => 'yupe\components\ConfigManager',
+        ),
+        'moduleManager' => array(
+            'class' => 'yupe\components\ModuleManager',
         ),
         // Работа с миграциями, обновление БД модулей
         'migrator'=>array(
@@ -112,7 +118,7 @@ return array(
         ),
         // конфигурирование urlManager, подробнее: http://www.yiiframework.ru/doc/guide/ru/topics.url
         'urlManager' => array(
-            'class'          => 'application.modules.yupe.components.urlManager.LangUrlManager',
+            'class'          => 'yupe\components\urlManager\LangUrlManager',
             'languageInPath' => true,
             'langParam'      => 'language',
             'urlFormat'      => 'path',
@@ -129,6 +135,8 @@ return array(
                 '/backend/<module:\w+>/<controller:\w+>'                          => '<module>/<controller>Backend/index',
                 '/backend/<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>'    => '<module>/<controller>Backend/<action>',
                 '/backend/<module:\w+>/<controller:\w+>/<action:\w+>'             => '<module>/<controller>Backend/<action>',
+                '/gii/<controller:\w+>/<action:\w+>'                              => 'gii/<controller>/<action>',
+                '/site/<action:\w+>'                                              => 'site/<action>',
             )
         ),
         // конфигурируем компонент CHttpRequest для защиты от CSRF атак, подробнее: http://www.yiiframework.ru/doc/guide/ru/topics.security
@@ -137,9 +145,19 @@ return array(
         'request' => array(
             'class'                  => 'yupe\components\HttpRequest',
             'enableCsrfValidation'   => true,
+            'enableCookieValidation' => true,
+            'csrfCookie' => array(
+                'httpOnly' => true,
+            ),
             'csrfTokenName'          => 'YUPE_TOKEN',
-            'noCsrfValidationRoutes' => array('yupe/backend/AjaxFileUpload'),
+            'noCsrfValidationRoutes' => array('backend/image/image/AjaxImageUpload', 'backend/image/image/AjaxImageUpload'),
             'enableCookieValidation' => true, // подробнее: http://www.yiiframework.com/doc/guide/1.1/ru/topics.security#sec-4
+        ),
+
+        'session' => array(
+            'cookieParams' => array(
+                'httponly' => true,
+            )
         ),
         // подключение компонента для генерации ajax-ответов
         'ajax' => array(
@@ -168,8 +186,8 @@ return array(
         // Подключение компоненты подсветки кода Highlight.js (Подробнее: http://softwaremaniacs.org/soft/highlight/)
         'highlightjs' => array(
             'class'   => 'application.modules.yupe.extensions.highlightjs.Highlightjs',
-            'remote' => false,
-            'style'=>'github'
+            'remote'  => false,
+            'style   '=>'github'
         ),
 
         'errorHandler'=>array(
@@ -177,10 +195,7 @@ return array(
             'errorAction'=>'site/error',
         ),
     ),
-    'rules'      => array(
-        // Настройки для урлов приложения
-        // (использовать лишь в userspace)
-        // Пример:
-        // '<slug>.html' => 'page/page/show',
-    ),
+    'rules' => array(
+        //подробнее http://yupe.ru/docs/yupe/userspace.config.html
+    )
 );

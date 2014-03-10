@@ -19,6 +19,9 @@ return array(
         'user' => array(
             'class'    => 'application.modules.user.components.YWebUser',
             'loginUrl' => '/user/account/login/',
+            'identityCookie' => array(
+                'httpOnly' => true,
+            ),
         ),
 
         'userManager' => array(
@@ -27,11 +30,19 @@ return array(
                 'class' => 'application.modules.user.components.Hasher'
             ),
             'tokenStorage' => array(
-                'class' => 'application.modules.user.components.DbTokenStorage',
+                'class' => 'application.modules.user.components.TokenStorage',
             )
         ),
+
         'authenticationManager' => array(
             'class' => 'application.modules.user.components.AuthenticationManager'
+        ),
+
+        'notify' => array(
+            'class' => 'yupe\components\Notify',
+            'mail' => array(
+                'class' => 'yupe\components\Mail'
+            )
         )
     ),
 
@@ -47,6 +58,7 @@ return array(
         '/activate/<token>'      => 'user/account/activate',
         '/confirm/<token>'       => 'user/account/confirm',
         '/recovery/<token>'      => 'user/account/restore',
-        '/user/account/captcha/<v>' => '/user/account/captcha/'
+        '/user/account/captcha/refresh/<v>' => 'user/account/captcha/refresh',
+        '/user/account/captcha/<v>' => 'user/account/captcha/'
     ),
 );
