@@ -210,7 +210,7 @@ class User extends yupe\models\YModel
         $this->_oldStatus       = $this->status;
         // Если пустое поле аватар - автоматически
         // включаем граватар:
-        $this->use_gravatar = empty($this->avatar);       
+        $this->use_gravatar = empty($this->avatar);
 
         return parent::afterFind();
     }
@@ -221,8 +221,8 @@ class User extends yupe\models\YModel
      * @return void
      */
     public function beforeValidate()
-    {        
-        $this->gender = $this->gender ?: self::GENDER_THING;       
+    {
+        $this->gender = $this->gender ?: self::GENDER_THING;
         return parent::beforeValidate();
     }
 
@@ -235,8 +235,6 @@ class User extends yupe\models\YModel
     {
         if($this->getIsNewRecord()) {
             $this->registration_date = new CDbExpression('NOW()');
-            $this->birth_date = new CDbExpression('NOW()');
-            // $this->birth_date = null;
         }else{
             // Запрещаем действия, при которых администратор
             // может быть заблокирован или сайт останется без
@@ -258,7 +256,7 @@ class User extends yupe\models\YModel
             $this->birth_date = null;
         }
         // Меняем дату изменения профиля:
-        $this->change_date = new CDbExpression('NOW()');       
+        $this->change_date = new CDbExpression('NOW()');
 
         return parent::beforeSave();
     }
@@ -442,14 +440,14 @@ class User extends yupe\models\YModel
 
                 $avatarsDir = $userModule->avatarsDir;
                 $basePath   = $userModule->getUploadPath();
-                $uploadPath = Yii::app()->getModule('yupe')->uploadPath;          
+                $uploadPath = Yii::app()->getModule('yupe')->uploadPath;
                 $sizedFile  = str_replace(".", "_" . $size . ".", $this->avatar);
                 $baseUrl    = Yii::app()->getRequest()->baseUrl . '/' . $uploadPath . '/'. $avatarsDir . "/" . $sizedFile;
 
                 // Посмотрим, есть ли у нас уже нужный размер? Если есть - используем его
-                if (file_exists($basePath . "/" . $sizedFile)) {                   
+                if (file_exists($basePath . "/" . $sizedFile)) {
                     $ava = $baseUrl;
-                } else if (file_exists($basePath . "/" . $this->avatar)){              
+                } else if (file_exists($basePath . "/" . $this->avatar)){
                     // Есть! Можем сделать нужный размер
                     $image = Yii::app()->image->load($basePath . "/" . $this->avatar);
 
@@ -467,38 +465,8 @@ class User extends yupe\models\YModel
                 }
             }
         }
-<<<<<<< HEAD
 
-        // Нету аватарки, печалька :'(
-        return Yii::app()->getRequest()->baseUrl . Yii::app()->getModule('user')->defaultAvatar;
-    }
-
-    /**
-     * Список доступных к изменению статусов:
-     * --------------------------------------
-     * заставлять пользователя проходить
-     * активацию по 100 раз - глупо, потому
-     * мы запрещаем в GridView выставлять
-     * статус "Не активирован", если есть
-     * необходимость - редактирование пользователя.
-     *
-     * @return array
-     */
-    public function getChangeableStatusList()
-    {
-        $statuses = $this->getStatusList();
-
-        $status = $this->getIsActivated() === false
-                ? self::STATUS_ACTIVE
-                : self::STATUS_NOT_ACTIVE;
-
-        unset($statuses[$status]);
-
-        return $statuses;
-=======
-     
         return $ava ? $ava : $avatar;
->>>>>>> main/master
     }
 
     /**
@@ -548,12 +516,8 @@ class User extends yupe\models\YModel
      *
      * @return void
      */
-<<<<<<< HEAD
     public function changeAvatar(CUploadedFile $uploadedFile) {
-=======
-    public function changeAvatar(CUploadedFile $uploadedFile) {    
 
->>>>>>> main/master
         $basePath = Yii::app()->getModule('user')->getUploadPath();
 
         //создаем каталог для аватарок, если не существует
@@ -565,7 +529,7 @@ class User extends yupe\models\YModel
 
         $this->removeOldAvatar();
 
-        if(!$uploadedFile->saveAs($basePath . $filename)) {           
+        if(!$uploadedFile->saveAs($basePath . $filename)) {
             throw new CException(Yii::t('UserModule.user','It is not possible to save avatar!'));
         }
 
